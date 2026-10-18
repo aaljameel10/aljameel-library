@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>إدارة التعليقات | مكتبة د. محمد الجميل</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/fonts.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.adm{max-width:900px;margin:0 auto;padding:40px max(20px,env(safe-area-inset-left,0px)) 80px}
+.adm h1{font-size:40px;margin-bottom:6px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:20px 0}
+.card{padding:18px 20px;background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);display:flex;flex-direction:column;gap:10px}
+.list{display:flex;flex-direction:column;gap:14px}
+.meta{font-size:13px;color:var(--muted-2)}
+.body{white-space:pre-line;line-height:1.9}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.acts .btn{min-height:44px;font-size:15px}
+textarea,input[type=password]{font:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--rule-2);border-radius:var(--r);background:var(--paper);color:var(--text);width:100%}
+.login{max-width:420px;display:flex;flex-direction:column;gap:12px}
+.msg{color:var(--err);min-height:1.5em}
+</style>
+</head>
+<body>
+<main class="adm">
+<p class="crumbs"><a href="/">العودة إلى الموقع</a></p>
+<h1>إدارة التعليقات</h1>
+<p class="note" style="margin-top:0">لا يظهر أي تعليق في الموقع حتى تعتمده هنا. يمكنك إضافة ردّ يظهر تحت التعليق.</p>
+
+<form id="login" class="login" hidden>
+<label for="pw">كلمة مرور الإدارة</label>
+<input id="pw" type="password" autocomplete="current-password" required>
+<button class="btn" type="submit">دخول</button>
+<p class="msg" id="login-msg" role="alert"></p>
+</form>
+
+<section id="panel" hidden>
+<div class="bar" role="group" aria-label="نوع التعليقات">
+<button type="button" class="pill" data-status="pending" aria-pressed="true">بانتظار المراجعة <span data-n="pending"></span></button>
+<button type="button" class="pill" data-status="approved" aria-pressed="false">المنشورة <span data-n="approved"></span></button>
+<button type="button" class="pill" id="logout" style="margin-inline-start:auto">خروج</button>
+</div>
+<div id="list" class="list" aria-live="polite"></div>
+</section>
+</main>
+<script>
+const toAr = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const TITLES = {"women-around-prophet": "نساء حول النبي ﷺ", "mawali-rasul": "موالي رسول الله ﷺ وأزواجه وخدمهم من النساء", "mashahir-mawali": "مشاهير موالي رسول الله ﷺ", "prophet-wives": "أزواج النبي ﷺ", "ghazwat-usra": "غزوة العسرة (٩هـ / ٦٣٠م)", "prophet-jews-expulsion": "إجلاء النبي ﷺ لليهود عن المدينة", "prophet-houses": "بيوت النبي ﷺ وحجراتها", "prophet-sham-trip": "رحلة النبي ﷺ إلى الشام ومقابلة الراهب بحيرا", "umar-dhimma-expulsion": "إجلاء عمر بن الخطاب لأهل الذمة", "rasool-madina-critique": "الرسول ﷺ في المدينة", "prophet-jews": "النبي ﷺ ويهود المدينة", "islam-umar": "إسلام عمر بن الخطاب", "ibn-alhaj-education": "آراء ابن الحاج في تعليم الصبيان", "hijra-habasha": "الهجرة إلى الحبشة", "andalus-education-terms": "المصطلحات التعليمية في الأندلس", "food-drink": "الأطعمة والأشربة في عصر الرسول ﷺ", "women-jewelry": "حلية النساء في عصر الرسول ﷺ", "clothing": "اللباس في عصر الرسول ﷺ", "vessels": "الآنية والأوعية المستخدمة في العهد النبوي", "furnishings": "الفرش والستور على عهد النبي ﷺ", "abbasid-libraries": "المكتبات العربية في العصر العباسي", "islamic-rings": "الخواتم الإسلامية في القرنين الأول والثاني الهجريين"};
+let status = 'pending';
+async function api(path, opts) {
+  const r = await fetch('/api/admin/' + path, { headers: { 'content-type': 'application/json' }, credentials: 'same-origin', ...opts });
+  const j = await r.json().catch(() => ({}));
+  if (r.status === 401) { show(false); throw new Error(j.error || 'سجّل الدخول أولاً.'); }
+  if (!r.ok) throw new Error(j.error || 'حدث خطأ. أعد المحاولة.');
+  return j;
+}
+function show(loggedIn) { document.getElementById('login').hidden = loggedIn; document.getElementById('panel').hidden = !loggedIn; }
+async function load() {
+  const list = document.getElementById('list');
+  list.innerHTML = '<p class="note">جارٍ التحميل…</p>';
+  let data;
+  try { data = await api('comments?status=' + status); } catch (e) { list.innerHTML = ''; return; }
+  show(true);
+  document.querySelectorAll('[data-n]').forEach(el => el.textContent = '(' + toAr(data.counts[el.dataset.n] || 0) + ')');
+  document.querySelectorAll('[data-status]').forEach(b => b.setAttribute('aria-pressed', b.dataset.status === status));
+  if (!data.comments.length) { list.innerHTML = '<p class="note">' + (status === 'pending' ? 'لا توجد تعليقات جديدة بانتظار المراجعة.' : 'لا توجد تعليقات منشورة بعد.') + '</p>'; return; }
+  list.innerHTML = data.comments.map(c => `
+    <article class="card" data-id="${c.id}">
+      <p class="meta"><a href="/books/${esc(c.slug)}/" target="_blank" rel="noopener">${esc(TITLES[c.slug] || c.slug)}</a> ، ${esc(c.created)}</p>
+      <p><strong>${esc(c.name)}</strong></p>
+      <p class="body">${esc(c.body)}</p>
+      <label class="sr" for="r${c.id}">ردّ المكتبة</label>
+      <textarea id="r${c.id}" rows="2" placeholder="ردّ اختياري يظهر تحت التعليق">${esc(c.reply)}</textarea>
+      <div class="acts">
+        ${status === 'pending' ? '<button class="btn" data-act="approve">اعتماد ونشر</button>' : '<button class="btn" data-act="approve">حفظ الرد</button><button class="btn ghost" data-act="hide">إخفاء من الموقع</button>'}
+        <button class="btn ghost" data-act="delete" data-confirm="0">حذف</button>
+      </div>
+    </article>`).join('');
+}
+document.getElementById('list').addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const card = b.closest('[data-id]'), id = +card.dataset.id;
+  if (b.dataset.act === 'delete' && b.dataset.confirm === '0') { b.dataset.confirm = '1'; b.textContent = 'اضغط مرة أخرى لتأكيد الحذف'; return; }
+  b.disabled = true;
+  try { await api('comments', { method: 'POST', body: JSON.stringify({ id, action: b.dataset.act, reply: card.querySelector('textarea').value.trim() || null }) }); load(); }
+  catch (err) { b.disabled = false; b.textContent = err.message; }
+});
+document.querySelectorAll('[data-status]').forEach(b => b.addEventListener('click', () => { status = b.dataset.status; load(); }));
+document.getElementById('logout').addEventListener('click', async () => { await fetch('/api/admin/logout', { method: 'POST' }); show(false); });
+document.getElementById('login').addEventListener('submit', async e => {
+  e.preventDefault();
+  const m = document.getElementById('login-msg'); m.textContent = '';
+  try { await api('login', { method: 'POST', body: JSON.stringify({ password: document.getElementById('pw').value }) }); document.getElementById('pw').value = ''; load(); }
+  catch (err) { m.textContent = err.message; }
+});
+load().catch(() => show(false));
+fetch('/api/admin/comments?status=pending', { credentials: 'same-origin' }).then(r => { if (r.status === 401 || r.status === 503) show(false); });
+</script>
+</body>
+</html>
