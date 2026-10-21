@@ -318,6 +318,28 @@ def toc_html(w):
     return f'<ol class="toc">{lis}</ol><p class="note">فهرس الكتاب كما ورد في طبعته، والأرقام أرقام صفحات الطبعة. اضغط أي عنوان لفتحه في القارئ.</p>'
 
 
+def scholar_meta(w):
+    """Highwire Press tags read by Google Scholar (one work per page, PDF on the same site)."""
+    west = lambda t: t.translate(str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789'))
+    title = w['title'] + (f': {w["subtitle"]}' if w['subtitle'] and not w['subtitle'].startswith('(') else (f' {w["subtitle"]}' if w['subtitle'] else ''))
+    m = [('citation_title', title), ('citation_author', 'الجميل، محمد بن فارس'), ('citation_author_institution', 'جامعة الملك سعود'),
+         ('citation_publication_date', str(w['year'])), ('citation_language', 'ar'),
+         ('citation_pdf_url', SITE + w['pdf']), ('citation_abstract_html_url', f'{SITE}/books/{w["slug"]}/')]
+    if w['type'] == 'book':
+        if w['publisher']:
+            m.append(('citation_publisher', w['publisher']))
+    else:
+        venue = w['edition'] or w['publisher']
+        if venue:
+            v = venue.split('»: ', 1)[1] if venue.startswith('«') and '»: ' in venue else venue
+            conf = 'مداولات' in v or 'اللقاء' in v or 'ندوة' in v
+            m.append(('citation_conference_title' if conf else 'citation_journal_title', v.split('، ')[0]))
+        pr = re.findall(r'\d+', west(w['pages_range'] or ''))
+        if len(pr) == 2:
+            m += [('citation_firstpage', pr[0]), ('citation_lastpage', pr[1])]
+    return ''.join(f'<meta name="{k}" content="{e(v)}">' for k, v in m)
+
+
 def build_book(w, W):
     related = [x for x in W if x['theme'] == w['theme'] and x['id'] != w['id']][:4]
     tabs, panels = [], []
@@ -431,7 +453,7 @@ def build_book(w, W):
         ld['publisher' if w['type'] == 'book' else 'isPartOf'] = {"@type": "Organization" if w['type'] == 'book' else "Periodical", "name": w['publisher']}
     return page(f'/books/{w["slug"]}/', w['title'], desc, body, 'library',
                 scripts='<script type="module" src="/assets/book.js"></script><script type="module" src="/assets/reader.js"></script><script type="module" src="/assets/stats.js"></script><script type="module" src="/assets/comments.js"></script>',
-                extra_head='<link rel="modulepreload" href="/vendor/pdfjs/pdf.min.mjs">', jsonld=ld)
+                extra_head=scholar_meta(w) + '<link rel="modulepreload" href="/vendor/pdfjs/pdf.min.mjs">', jsonld=ld)
 
 
 SOURCES = [
