@@ -355,6 +355,8 @@ def build_book(w, W):
         facts.append(('بيانات الطبعة المرفوعة', w['edition']))
     elif w['edition']:
         facts.append(('بيانات النشر', w['edition'] + (f'، {w["pages_range"]}' if w['pages_range'] else '')))
+    if w.get('license'):
+        facts.append(('مصدر الملف', w['license']))
     facts.append(('الملف', f'{ar(w["npages"])} صفحة، {ar(w["mb"])} ميجابايت'))
     ltr = lambda t: re.sub(r'((?:ISBN|ردمك)\s*)([0-9X][0-9X\- ]+[0-9X])', r'\1<bdi dir="ltr">\2</bdi>', e(t))
     counts = (f'<div data-count-wrap hidden><dt>مرات القراءة في الموقع</dt><dd data-count="{w["slug"]}:read"></dd></div>'

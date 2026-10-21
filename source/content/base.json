@@ -1,24 +1,233 @@
 [
- {"id":"22","slug":"women-around-prophet","title":"نساء حول النبي ﷺ","subtitle":"دراسة للعلاقة بين النبي ونساء مجتمع المدينة","type":"book","year":2016,"theme":"sira","publisher":"جداول للنشر والترجمة والتوزيع، بيروت"},
- {"id":"21","slug":"mawali-rasul","title":"موالي رسول الله ﷺ وأزواجه وخدمهم من النساء","subtitle":"","type":"book","year":2021,"theme":"sira","publisher":"كتاب المجلة العربية (٥٤٣)، الرياض"},
- {"id":"20","slug":"mashahir-mawali","title":"مشاهير موالي رسول الله ﷺ","subtitle":"أم أيمن، وزيد بن حارثة، وأسامة بن زيد أنموذجاً","type":"book","year":2020,"theme":"sira","publisher":"كتاب المجلة العربية (٢٨٦)، الرياض"},
- {"id":"4","slug":"prophet-wives","title":"أزواج النبي ﷺ","subtitle":"دراسة للعلاقة بين النبي وأزواجه: عرض ونقد للروايات","type":"book","year":2014,"theme":"sira","publisher":"جداول للنشر والترجمة والتوزيع، بيروت"},
- {"id":"19","slug":"ghazwat-usra","title":"غزوة العسرة (٩هـ / ٦٣٠م)","subtitle":"دراسة نقدية","type":"research","year":2012,"theme":"sira","publisher":"مجلة الدارة، دارة الملك عبدالعزيز"},
- {"id":"1","slug":"prophet-jews-expulsion","title":"إجلاء النبي ﷺ لليهود عن المدينة","subtitle":"(٢–٥هـ / ٦٢٤–٦٢٦م)","type":"research","year":2010,"theme":"yahud","publisher":""},
- {"id":"30001","slug":"prophet-houses","title":"بيوت النبي ﷺ وحجراتها","subtitle":"وصفة معيشته فيها: بيت عائشة أنموذجاً","type":"book","year":2010,"theme":"sira","publisher":"مركز الملك فيصل للبحوث والدراسات الإسلامية، الرياض"},
- {"id":"18","slug":"prophet-sham-trip","title":"رحلة النبي ﷺ إلى الشام ومقابلة الراهب بحيرا","subtitle":"قراءة نقدية","type":"research","year":2005,"theme":"sira","publisher":""},
- {"id":"2","slug":"umar-dhimma-expulsion","title":"إجلاء عمر بن الخطاب لأهل الذمة","subtitle":"قراءة مقارنة في روايات المحدّثين والمؤرخين","type":"research","year":2003,"theme":"yahud","publisher":"مجلة الجمعية التاريخية السعودية"},
- {"id":"9","slug":"rasool-madina-critique","title":"الرسول ﷺ في المدينة","subtitle":"نقد كتاب علي حسني الخربوطلي","type":"article","year":2002,"theme":"sira","publisher":"مجلة عالم الكتب"},
- {"id":"14","slug":"prophet-jews","title":"النبي ﷺ ويهود المدينة","subtitle":"دراسة تحليلية لعلاقة الرسول ﷺ بيهود المدينة ومواقف المستشرقين منها","type":"book","year":2002,"theme":"yahud","publisher":"مركز الملك فيصل للبحوث والدراسات الإسلامية، الرياض"},
- {"id":"5","slug":"islam-umar","title":"إسلام عمر بن الخطاب","subtitle":"قراءة نقدية للروايات","type":"research","year":2000,"theme":"sira","publisher":"مجلة الجمعية التاريخية السعودية"},
- {"id":"3","slug":"ibn-alhaj-education","title":"آراء ابن الحاج في تعليم الصبيان","subtitle":"دراسة مقارنة","type":"research","year":1999,"theme":"hadara","publisher":"المجلة العربية للعلوم الإنسانية، جامعة الكويت"},
- {"id":"15","slug":"hijra-habasha","title":"الهجرة إلى الحبشة","subtitle":"دراسة مقارنة للروايات","type":"book","year":1998,"theme":"sira","publisher":"دار الفيصل الثقافية، الرياض (الطبعة الثانية ٢٠٠٤م)"},
- {"id":"12","slug":"andalus-education-terms","title":"المصطلحات التعليمية في الأندلس","subtitle":"خلال خمسة قرون","type":"research","year":1997,"theme":"hadara","publisher":"مجلة كلية الآداب والعلوم الإنسانية بالرباط"},
- {"id":"6","slug":"food-drink","title":"الأطعمة والأشربة في عصر الرسول ﷺ","subtitle":"","type":"book","year":1996,"theme":"madi","publisher":"حوليات كلية الآداب، جامعة الكويت"},
- {"id":"16","slug":"women-jewelry","title":"حلية النساء في عصر الرسول ﷺ","subtitle":"دراسة مستمدة من مصادر الحديث النبوي الشريف","type":"research","year":1995,"theme":"madi","publisher":"مجلة جامعة الملك سعود – الآداب"},
- {"id":"11","slug":"clothing","title":"اللباس في عصر الرسول ﷺ","subtitle":"دراسة مستمدة من مصادر الحديث النبوي الشريف","type":"book","year":1994,"theme":"madi","publisher":"حوليات كلية الآداب، جامعة الكويت"},
- {"id":"7","slug":"vessels","title":"الآنية والأوعية المستخدمة في العهد النبوي","subtitle":"دراسة مستمدة من كتب الحديث الشريف","type":"research","year":1994,"theme":"madi","publisher":"مجلة جامعة الإمام محمد بن سعود الإسلامية"},
- {"id":"10","slug":"furnishings","title":"الفرش والستور على عهد النبي ﷺ","subtitle":"","type":"research","year":1992,"theme":"madi","publisher":"مجلة الدارة، دارة الملك عبدالعزيز"},
- {"id":"13","slug":"abbasid-libraries","title":"المكتبات العربية في العصر العباسي","subtitle":"لأولغا بنتو، ترجمة وتعليق","type":"research","year":1989,"theme":"hadara","publisher":"مجلة العصور"},
- {"id":"8","slug":"islamic-rings","title":"الخواتم الإسلامية في القرنين الأول والثاني الهجريين","subtitle":"","type":"research","year":1989,"theme":"madi","publisher":"مجلة جامعة الملك عبدالعزيز: الآداب والعلوم الإنسانية"}
+ {
+  "id": "22",
+  "slug": "women-around-prophet",
+  "title": "نساء حول النبي ﷺ",
+  "subtitle": "دراسة للعلاقة بين النبي ونساء مجتمع المدينة",
+  "type": "book",
+  "year": 2016,
+  "theme": "sira",
+  "publisher": "جداول للنشر والترجمة والتوزيع، بيروت"
+ },
+ {
+  "id": "21",
+  "slug": "mawali-rasul",
+  "title": "موالي رسول الله ﷺ وأزواجه وخدمهم من النساء",
+  "subtitle": "",
+  "type": "book",
+  "year": 2021,
+  "theme": "sira",
+  "publisher": "كتاب المجلة العربية (٥٤٣)، الرياض"
+ },
+ {
+  "id": "20",
+  "slug": "mashahir-mawali",
+  "title": "مشاهير موالي رسول الله ﷺ",
+  "subtitle": "أم أيمن، وزيد بن حارثة، وأسامة بن زيد أنموذجاً",
+  "type": "book",
+  "year": 2020,
+  "theme": "sira",
+  "publisher": "كتاب المجلة العربية (٢٨٦)، الرياض"
+ },
+ {
+  "id": "4",
+  "slug": "prophet-wives",
+  "title": "أزواج النبي ﷺ",
+  "subtitle": "دراسة للعلاقة بين النبي وأزواجه: عرض ونقد للروايات",
+  "type": "book",
+  "year": 2014,
+  "theme": "sira",
+  "publisher": "جداول للنشر والترجمة والتوزيع، بيروت"
+ },
+ {
+  "id": "19",
+  "slug": "ghazwat-usra",
+  "title": "غزوة العسرة (٩هـ / ٦٣٠م)",
+  "subtitle": "دراسة نقدية",
+  "type": "research",
+  "year": 2012,
+  "theme": "sira",
+  "publisher": "مجلة الدارة، دارة الملك عبدالعزيز"
+ },
+ {
+  "id": "1",
+  "slug": "prophet-jews-expulsion",
+  "title": "إجلاء النبي ﷺ لليهود عن المدينة",
+  "subtitle": "(٢–٥هـ / ٦٢٤–٦٢٦م)",
+  "type": "research",
+  "year": 2010,
+  "theme": "yahud",
+  "publisher": ""
+ },
+ {
+  "id": "30001",
+  "slug": "prophet-houses",
+  "title": "بيوت النبي ﷺ وحجراتها",
+  "subtitle": "وصفة معيشته فيها: بيت عائشة أنموذجاً",
+  "type": "book",
+  "year": 2010,
+  "theme": "sira",
+  "publisher": "مركز الملك فيصل للبحوث والدراسات الإسلامية، الرياض"
+ },
+ {
+  "id": "18",
+  "slug": "prophet-sham-trip",
+  "title": "رحلة النبي ﷺ إلى الشام ومقابلة الراهب بحيرا",
+  "subtitle": "قراءة نقدية",
+  "type": "research",
+  "year": 2005,
+  "theme": "sira",
+  "publisher": ""
+ },
+ {
+  "id": "2",
+  "slug": "umar-dhimma-expulsion",
+  "title": "إجلاء عمر بن الخطاب لأهل الذمة",
+  "subtitle": "قراءة مقارنة في روايات المحدّثين والمؤرخين",
+  "type": "research",
+  "year": 2003,
+  "theme": "yahud",
+  "publisher": "مجلة الجمعية التاريخية السعودية"
+ },
+ {
+  "id": "9",
+  "slug": "rasool-madina-critique",
+  "title": "الرسول ﷺ في المدينة",
+  "subtitle": "نقد كتاب علي حسني الخربوطلي",
+  "type": "article",
+  "year": 2002,
+  "theme": "sira",
+  "publisher": "مجلة عالم الكتب"
+ },
+ {
+  "id": "14",
+  "slug": "prophet-jews",
+  "title": "النبي ﷺ ويهود المدينة",
+  "subtitle": "دراسة تحليلية لعلاقة الرسول ﷺ بيهود المدينة ومواقف المستشرقين منها",
+  "type": "book",
+  "year": 2002,
+  "theme": "yahud",
+  "publisher": "مركز الملك فيصل للبحوث والدراسات الإسلامية، الرياض"
+ },
+ {
+  "id": "5",
+  "slug": "islam-umar",
+  "title": "إسلام عمر بن الخطاب",
+  "subtitle": "قراءة نقدية للروايات",
+  "type": "research",
+  "year": 2000,
+  "theme": "sira",
+  "publisher": "مجلة الجمعية التاريخية السعودية"
+ },
+ {
+  "id": "3",
+  "slug": "ibn-alhaj-education",
+  "title": "آراء ابن الحاج في تعليم الصبيان",
+  "subtitle": "دراسة مقارنة",
+  "type": "research",
+  "year": 1999,
+  "theme": "hadara",
+  "publisher": "المجلة العربية للعلوم الإنسانية، جامعة الكويت"
+ },
+ {
+  "id": "15",
+  "slug": "hijra-habasha",
+  "title": "الهجرة إلى الحبشة",
+  "subtitle": "دراسة مقارنة للروايات",
+  "type": "book",
+  "year": 1998,
+  "theme": "sira",
+  "publisher": "دار الفيصل الثقافية، الرياض (الطبعة الثانية ٢٠٠٤م)"
+ },
+ {
+  "id": "12",
+  "slug": "andalus-education-terms",
+  "title": "المصطلحات التعليمية في الأندلس",
+  "subtitle": "خلال خمسة قرون",
+  "type": "research",
+  "year": 1997,
+  "theme": "hadara",
+  "publisher": "مجلة كلية الآداب والعلوم الإنسانية بالرباط"
+ },
+ {
+  "id": "6",
+  "slug": "food-drink",
+  "title": "الأطعمة والأشربة في عصر الرسول ﷺ",
+  "subtitle": "",
+  "type": "book",
+  "year": 1996,
+  "theme": "madi",
+  "publisher": "حوليات كلية الآداب، جامعة الكويت"
+ },
+ {
+  "id": "16",
+  "slug": "women-jewelry",
+  "title": "حلية النساء في عصر الرسول ﷺ",
+  "subtitle": "دراسة مستمدة من مصادر الحديث النبوي الشريف",
+  "type": "research",
+  "year": 1995,
+  "theme": "madi",
+  "publisher": "مجلة جامعة الملك سعود – الآداب"
+ },
+ {
+  "id": "11",
+  "slug": "clothing",
+  "title": "اللباس في عصر الرسول ﷺ",
+  "subtitle": "دراسة مستمدة من مصادر الحديث النبوي الشريف",
+  "type": "book",
+  "year": 1994,
+  "theme": "madi",
+  "publisher": "حوليات كلية الآداب، جامعة الكويت"
+ },
+ {
+  "id": "7",
+  "slug": "vessels",
+  "title": "الآنية والأوعية المستخدمة في العهد النبوي",
+  "subtitle": "دراسة مستمدة من كتب الحديث الشريف",
+  "type": "research",
+  "year": 1994,
+  "theme": "madi",
+  "publisher": "مجلة جامعة الإمام محمد بن سعود الإسلامية"
+ },
+ {
+  "id": "10",
+  "slug": "furnishings",
+  "title": "الفرش والستور على عهد النبي ﷺ",
+  "subtitle": "",
+  "type": "research",
+  "year": 1992,
+  "theme": "madi",
+  "publisher": "مجلة الدارة، دارة الملك عبدالعزيز"
+ },
+ {
+  "id": "13",
+  "slug": "abbasid-libraries",
+  "title": "المكتبات العربية في العصر العباسي",
+  "subtitle": "لأولغا بنتو، ترجمة وتعليق",
+  "type": "research",
+  "year": 1989,
+  "theme": "hadara",
+  "publisher": "مجلة العصور"
+ },
+ {
+  "id": "8",
+  "slug": "islamic-rings",
+  "title": "الخواتم الإسلامية في القرنين الأول والثاني الهجريين",
+  "subtitle": "",
+  "type": "research",
+  "year": 1989,
+  "theme": "madi",
+  "publisher": "مجلة جامعة الملك عبدالعزيز: الآداب والعلوم الإنسانية"
+ },
+ {
+  "id": "23",
+  "slug": "saqifa",
+  "title": "يوم السقيفة وبيعة أبي بكر الصديق",
+  "subtitle": "دراسة تحليلية مقارنة لروايات يوم السقيفة",
+  "type": "book",
+  "year": 2009,
+  "theme": "sira",
+  "publisher": "حوليات الآداب والعلوم الاجتماعية، جامعة الكويت",
+  "license": "موقع المجلة، بترخيص المشاع الإبداعي (CC BY-NC 4.0)"
+ }
 ]
