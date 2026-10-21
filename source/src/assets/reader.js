@@ -24,7 +24,7 @@ function setup(root) {
     loadP ??= (async () => {
       stage.innerHTML = '<p class="reader-msg">جارٍ فتح الملف…</p>';
       try {
-        doc = await pdfjs.getDocument({ url, disableAutoFetch: true, rangeChunkSize: 262144 }).promise;
+        doc = await pdfjs.getDocument({ url, disableAutoFetch: true, rangeChunkSize: 262144, isEvalSupported: false }).promise;
         input.max = doc.numPages; total.textContent = toAr(doc.numPages);
       } catch (e) {
         stage.innerHTML = '<p class="reader-msg">تعذّر فتح الملف هنا. يمكنك تحميله بزر «تحميل PDF».</p>';

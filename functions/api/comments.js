@@ -19,7 +19,7 @@ export async function onRequestPost({ request, env }) {
   try { b = await request.json(); } catch { return json({ error: 'تعذّر قراءة التعليق. أعد المحاولة.' }, 400); }
   const slug = b?.slug, name = clean(b?.name), body = clean(b?.body);
   // Spam traps: a hidden field people never fill, and a minimum time on the page.
-  if (b?.website || (Number(b?.t) > 0 && Number(b.t) < 4000)) return json({ ok: true });
+  if (b?.website || !(Number(b?.t) >= 4000)) return json({ ok: true });
   if (!isSlug(slug)) return json({ error: 'طلب غير صالح.' }, 400);
   if (name.length < 2 || name.length > 60) return json({ error: 'اكتب اسماً من حرفين إلى ٦٠ حرفاً.' }, 400);
   if (body.length < 5 || body.length > 2000) return json({ error: 'اكتب تعليقاً من ٥ أحرف إلى ٢٠٠٠ حرف.' }, 400);

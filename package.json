@@ -1,18 +1,15 @@
 {
-  "name": "repo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "name": "aljameel-library",
+  "private": true,
+  "type": "module",
+  "description": "مكتبة الدكتور محمد بن فارس الجميل — static site on Cloudflare Pages with Pages Functions and D1.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cd source && DIST=../public python3 build.py",
+    "dev": "cp wrangler.local.toml wrangler.toml && wrangler pages dev public --port 8788",
+    "test": "node --test tests/static.test.mjs",
+    "test:api": "node --test tests/api.test.mjs"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "wrangler": "^3.114.17"
   }
 }

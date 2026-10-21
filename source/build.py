@@ -169,7 +169,7 @@ VIDEOS = [
      'note': 'لقاء يتحدث فيه الدكتور الجميل عن بيوت النبي ﷺ وحجراته.'},
 ]
 PLAY = '<span class="play"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>'
-YT_JS = """<script>document.querySelectorAll('[data-yt]').forEach(v=>v.querySelector('button').addEventListener('click',()=>{v.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+v.dataset.yt+'?autoplay=1&rel=0" title="لقاء مصوّر" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';}));</script>"""
+YT_JS = '<script type="module" src="/assets/yt.js"></script>'
 
 
 def video_html(v):
@@ -610,10 +610,11 @@ def main():
           ''.join(f'<url><loc>{SITE}{u}</loc></url>' for u in urls) + '</urlset>')
     write('robots.txt', f'User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: {SITE}/sitemap.xml\n')
     write('admin/index.html', open(os.path.join(HERE, 'src', 'admin.html'), encoding='utf-8').read()
-          .replace('/*TITLES*/{}', json.dumps({w['slug']: w['title'] for w in W}, ensure_ascii=False)))
+          .replace('/*TITLES*/{}', json.dumps({w['slug']: w['title'] for w in W}, ensure_ascii=False).replace('<', '\\u003c')))
     write('_redirects', '/library /library/ 301\n/author /author/ 301\n/biography /author/ 301\n/videos /#talks 301\n/gallery /author/ 301\n/photos /author/ 301\n' +
           ''.join(f'/books/{w["slug"]} /books/{w["slug"]}/ 301\n' for w in W))
-    write('_headers', '/pdfs/*\n  Cache-Control: public, max-age=31536000\n/media/*\n  Cache-Control: public, max-age=31536000\n/data/*\n  Cache-Control: public, max-age=86400\n/assets/*\n  Cache-Control: public, max-age=3600\n')
+    # Security headers for every page (tested with the PDF reader, fonts and the YouTube player), then caching rules.
+    write('_headers', "/*\n  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://img.youtube.com; font-src 'self' data:; connect-src 'self'; media-src 'self'; worker-src 'self' blob:; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()\n  X-Frame-Options: SAMEORIGIN\n/admin/*\n  Cache-Control: no-store\n  X-Robots-Tag: noindex\n/pdfs/*\n  Cache-Control: public, max-age=86400\n/media/*\n  Cache-Control: public, max-age=86400\n/data/*\n  Cache-Control: public, max-age=86400\n/assets/*\n  Cache-Control: public, max-age=3600\n")
     # The API accepts only these slugs; write them next to it so new works are never rejected.
     lib = os.path.join(os.path.dirname(os.path.abspath(DIST)), 'lib')
     if os.path.isdir(lib):
