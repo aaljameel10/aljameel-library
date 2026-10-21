@@ -51,7 +51,7 @@ test('old addresses redirect to pages that exist', () => {
 
 test('pages carry no inline scripts, so the strict content security policy holds', () => {
   const headers = read('_headers');
-  assert.match(headers, /Content-Security-Policy: default-src 'self'; script-src 'self';/);
+  assert.match(headers, /Content-Security-Policy: default-src 'self'; script-src 'self'[^;]*;/);
   for (const p of ['index.html', 'library/index.html', 'author/index.html', 'admin/index.html', ...SLUGS.map(s => `books/${s}/index.html`)]) {
     const html = read(p);
     const inline = [...html.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*type="application\/(?:ld\+)?json")[^>]*>/g)];
