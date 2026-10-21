@@ -130,7 +130,7 @@ def page(path, title, desc, body, current='', extra_head='', scripts='', og_imag
 <div class="wrap">
 <div><h2>مكتبة الدكتور محمد الجميل</h2><p>كتب الدكتور محمد بن فارس الجميل وأبحاثه المحكّمة في السيرة النبوية والتاريخ الإسلامي، متاحة للقراءة والتحميل مجاناً لأغراض البحث والتعلّم.</p></div>
 <div><h3>تصفّح</h3><ul><li><a href="/library/">المكتبة كاملة</a></li><li><a href="/library/?type=book">الكتب</a></li><li><a href="/library/?type=research">الأبحاث المحكّمة</a></li><li><a href="/author/">عن المؤلف</a></li></ul></div>
-<div><h3>التواصل</h3><ul><li>الرياض، المملكة العربية السعودية</li><li><a href="mailto:maljameel47@gmail.com">maljameel47@gmail.com</a></li></ul></div>
+<div><h3>التواصل</h3><ul><li>الرياض، المملكة العربية السعودية</li><li><a href="mailto:maljameel47@gmail.com">maljameel47@gmail.com</a></li><li><a href="https://x.com/dr_mjameel" target="_blank" rel="noopener me">حسابه على منصة X</a></li></ul></div>
 </div>
 <div class="wrap foot-base">© {ar(date.today().year)} مكتبة الدكتور محمد بن فارس الجميل. حقوق النشر محفوظة للمؤلف وناشري الطبعات الأصلية.</div>
 </footer>
@@ -450,7 +450,8 @@ def build_author(W):
 <h2>المهام العلمية</h2><ul class="plain-list">{li(bio.get("roles", []))}</ul>
 </div>
 <div>
-<figure class="portrait" style="margin-bottom:28px"><img src="/img/portrait.jpg" alt="الدكتور محمد بن فارس الجميل" width="400" height="500"></figure>
+<figure class="portrait" style="margin-bottom:14px"><img src="/img/portrait.jpg" alt="الدكتور محمد بن فارس الجميل" width="400" height="500"></figure>
+<p style="margin-bottom:28px"><a class="btn ghost" href="https://x.com/dr_mjameel" target="_blank" rel="noopener me">تابع الدكتور على منصة X</a></p>
 <h2>لقاءات مصوّرة</h2>
 <div class="talks one">{"".join(video_html(v) for v in VIDEOS)}</div>
 </div>
@@ -458,7 +459,8 @@ def build_author(W):
 {YT_JS}'''
     ld = {"@context": "https://schema.org", "@type": "Person", "name": "محمد بن فارس الجميل", "birthPlace": "الزلفي",
           "jobTitle": "أستاذ التاريخ والحضارة الإسلامية", "affiliation": {"@type": "CollegeOrUniversity", "name": "جامعة الملك سعود"},
-          "alumniOf": ["جامعة الملك سعود", "Indiana University", "University of Michigan"], "url": SITE + '/author/'}
+          "alumniOf": ["جامعة الملك سعود", "Indiana University", "University of Michigan"], "url": SITE + '/author/',
+          "sameAs": ["https://x.com/dr_mjameel"]}
     return page('/author/', 'عن الدكتور محمد بن فارس الجميل', 'سيرة الدكتور محمد بن فارس الجميل: تعليمه ومسيرته في جامعة الملك سعود وجوائزه ومؤلفاته في السيرة النبوية والتاريخ الإسلامي.',
                 body, 'author', jsonld=ld)
 
