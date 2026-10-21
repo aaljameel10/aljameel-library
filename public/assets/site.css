@@ -300,3 +300,6 @@ bdi[dir=ltr]{white-space:nowrap;unicode-bidi:isolate}
 .c-msg{font-size:15px;color:var(--muted)}
 .c-msg.ok{color:var(--ok)}.c-msg.err{color:var(--err)}
 .c-hp{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.award-photo{margin:22px 0 0;max-width:440px}
+.award-photo img{width:100%;height:auto;border-radius:var(--r);display:block}
+.award-photo figcaption{font-size:14px;color:var(--muted-2);margin-top:10px;line-height:1.8}
