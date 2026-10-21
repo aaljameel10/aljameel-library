@@ -246,6 +246,12 @@ button{font:inherit;cursor:pointer}
 .video .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 .video .play span{width:72px;height:72px;border-radius:50%;background:rgba(19,35,58,.85);display:flex;align-items:center;justify-content:center}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video video{position:absolute;inset:0;width:100%;height:100%;background:#000}
+.talks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:36px}
+.talks.one{grid-template-columns:minmax(0,1fr);gap:28px}
+.talk figcaption h3{font-size:22px;margin:14px 0 6px;line-height:1.5}
+.talk figcaption p{color:var(--text-2);font-size:15px;line-height:1.9}
+.talks.one .talk figcaption h3{font-size:19px}
 
 /* Responsive */
 @media (max-width:980px){

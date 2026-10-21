@@ -161,6 +161,27 @@ def citation(w):
     return f'الجميل، محمد بن فارس. «{t}». {venue}{pr}.'.replace('..', '.')
 
 
+VIDEOS = [
+    {'mp4': '/media/hubasha.mp4', 'poster': '/media/hubasha.jpg',
+     'title': 'سوق حُباشة: حيث تاجر النبي ﷺ لخديجة رضي الله عنها قبل الإسلام',
+     'note': 'يتحدث الدكتور الجميل عن سوق حُباشة في ديار قبائل بارق، الذي باع فيه النبي ﷺ واشترى لخديجة رضي الله عنها قبل الإسلام. من لقاء على قناة الزاهرة.'},
+    {'yt': 'yY-IxGi09x8', 'title': 'بيوت النبي ﷺ وحجراته',
+     'note': 'لقاء يتحدث فيه الدكتور الجميل عن بيوت النبي ﷺ وحجراته.'},
+]
+PLAY = '<span class="play"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>'
+YT_JS = """<script>document.querySelectorAll('[data-yt]').forEach(v=>v.querySelector('button').addEventListener('click',()=>{v.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+v.dataset.yt+'?autoplay=1&rel=0" title="لقاء مصوّر" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';}));</script>"""
+
+
+def video_html(v):
+    if v.get('mp4'):
+        player = (f'<div class="video"><video controls preload="none" playsinline poster="{v["poster"]}" aria-label="{e(v["title"])}">'
+                  f'<source src="{v["mp4"]}" type="video/mp4"></video></div>')
+    else:
+        player = (f'<div class="video" data-yt="{v["yt"]}"><button type="button" aria-label="شغّل لقاء: {e(v["title"])}">'
+                  f'<img src="https://img.youtube.com/vi/{v["yt"]}/hqdefault.jpg" alt="" loading="lazy">{PLAY}</button></div>')
+    return f'<figure class="talk">{player}<figcaption><h3>{e(v["title"])}</h3><p>{e(v["note"])}</p></figcaption></figure>'
+
+
 def build_home(W):
     by = {w['id']: w for w in W}
     latest = sorted(W, key=lambda w: -w['year'])[:4]
@@ -232,6 +253,11 @@ def build_home(W):
 
 {quote}
 
+<section class="sec" id="talks"><div class="wrap">
+<div class="sec-head"><h2>لقاءات مصوّرة</h2></div>
+<div class="talks">{"".join(video_html(v) for v in VIDEOS)}</div>
+</div></section>
+
 <section class="sec"><div class="wrap split">
 <div><h2 style="font-size:38px">عن المؤلف</h2>
 <p style="margin-top:14px;color:var(--text-2)">من مواليد محافظة الزلفي. درس في جامعة الملك سعود ثم في جامعتي إنديانا وميشيغان، ودرّس التاريخ والحضارة الإسلامية في جامعة الملك سعود من ١٩٨٥ حتى ٢٠١٣م. له كتب في السيرة النبوية وأكثر من عشرين بحثاً محكّماً.</p>
@@ -243,7 +269,7 @@ def build_home(W):
           "about": {"@type": "Person", "name": "محمد بن فارس الجميل", "jobTitle": "أستاذ التاريخ والحضارة الإسلامية", "affiliation": "جامعة الملك سعود"}}
     return page('/', 'مكتبة الدكتور محمد بن فارس الجميل: كتب السيرة النبوية والتاريخ الإسلامي',
                 'كتب الدكتور محمد بن فارس الجميل وأبحاثه المحكّمة في السيرة النبوية وتاريخ المدينة المنورة والحضارة الإسلامية، للقراءة والتحميل والبحث في نصوصها.',
-                body, 'home', jsonld=ld, scripts='<script type="module" src="/assets/stats.js"></script>')
+                body, 'home', jsonld=ld, scripts='<script type="module" src="/assets/stats.js"></script>' + YT_JS)
 
 
 def build_library(W):
@@ -425,12 +451,11 @@ def build_author(W):
 </div>
 <div>
 <figure class="portrait" style="margin-bottom:28px"><img src="/img/portrait.jpg" alt="الدكتور محمد بن فارس الجميل" width="400" height="500"></figure>
-<h2>لقاء مصوّر</h2>
-<div class="video" data-yt="yY-IxGi09x8"><button type="button" aria-label="شغّل لقاء: بيوت النبي ﷺ وحجراته"><img src="https://img.youtube.com/vi/yY-IxGi09x8/hqdefault.jpg" alt="" loading="lazy"><span class="play"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></div>
-<p class="note">لقاء يتحدث فيه الدكتور الجميل عن بيوت النبي ﷺ وحجراته.</p>
+<h2>لقاءات مصوّرة</h2>
+<div class="talks one">{"".join(video_html(v) for v in VIDEOS)}</div>
 </div>
 </div></section>
-<script>document.querySelectorAll('[data-yt]').forEach(v=>v.querySelector('button').addEventListener('click',()=>{{v.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+v.dataset.yt+'?autoplay=1&rel=0" title="لقاء مصوّر" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';}}));</script>'''
+{YT_JS}'''
     ld = {"@context": "https://schema.org", "@type": "Person", "name": "محمد بن فارس الجميل", "birthPlace": "الزلفي",
           "jobTitle": "أستاذ التاريخ والحضارة الإسلامية", "affiliation": {"@type": "CollegeOrUniversity", "name": "جامعة الملك سعود"},
           "alumniOf": ["جامعة الملك سعود", "Indiana University", "University of Michigan"], "url": SITE + '/author/'}
@@ -511,6 +536,9 @@ def main():
         s = os.path.join(LIB, src) if not src.startswith('og') else os.path.join(HERE, 'src', src)
         if os.path.exists(s):
             shutil.copy(s, os.path.join(DIST, dst))
+    md = os.path.join(LIB, 'media')
+    if os.path.isdir(md):
+        shutil.copytree(md, os.path.join(DIST, 'media'))
     os.makedirs(os.path.join(DIST, 'covers'))
     os.makedirs(os.path.join(DIST, 'pdfs'))
     os.makedirs(os.path.join(DIST, 'data', 'search'))
@@ -531,9 +559,9 @@ def main():
     write('robots.txt', f'User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: {SITE}/sitemap.xml\n')
     write('admin/index.html', open(os.path.join(HERE, 'src', 'admin.html'), encoding='utf-8').read()
           .replace('/*TITLES*/{}', json.dumps({w['slug']: w['title'] for w in W}, ensure_ascii=False)))
-    write('_redirects', '/library /library/ 301\n/author /author/ 301\n/biography /author/ 301\n/videos /author/ 301\n/gallery /author/ 301\n/photos /author/ 301\n' +
+    write('_redirects', '/library /library/ 301\n/author /author/ 301\n/biography /author/ 301\n/videos /#talks 301\n/gallery /author/ 301\n/photos /author/ 301\n' +
           ''.join(f'/books/{w["slug"]} /books/{w["slug"]}/ 301\n' for w in W))
-    write('_headers', '/pdfs/*\n  Cache-Control: public, max-age=31536000\n/data/*\n  Cache-Control: public, max-age=86400\n/assets/*\n  Cache-Control: public, max-age=3600\n')
+    write('_headers', '/pdfs/*\n  Cache-Control: public, max-age=31536000\n/media/*\n  Cache-Control: public, max-age=31536000\n/data/*\n  Cache-Control: public, max-age=86400\n/assets/*\n  Cache-Control: public, max-age=3600\n')
     print('built', len(W), 'works into', DIST)
 
 
