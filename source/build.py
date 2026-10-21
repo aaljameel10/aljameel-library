@@ -432,6 +432,29 @@ def build_book(w, W):
                 extra_head='<link rel="modulepreload" href="/vendor/pdfjs/pdf.min.mjs">', jsonld=ld)
 
 
+SOURCES = [
+    {'title': 'السيرة الذاتية الرسمية للدكتور محمد بن فارس الجميل', 'by': 'جامعة الملك سعود، مواقع أعضاء هيئة التدريس',
+     'url': 'https://faculty.ksu.edu.sa/ar/node/110437'},
+    {'title': 'خبر فوزه بجائزة الأمير سلمان لدراسات تاريخ الجزيرة العربية عن كتاب «بيوت النبي ﷺ وحجراتها»', 'by': 'صحيفة الاقتصادية، ٧ مايو ٢٠١٢م',
+     'url': 'https://www.aleqt.com/2012/05/07/article_654391.html',
+     'archive': 'https://web.archive.org/web/20251031231211/https://www.aleqt.com/2012/05/07/article_654391.html'},
+    {'title': 'عرض كتاب «أزواج النبي ﷺ: دراسة للعلاقة بين النبي وأزواجه»', 'by': 'صحيفة الجزيرة، ٥ مارس ٢٠١٤م',
+     'url': 'https://www.al-jazirah.com/2014/20140305/cu2.htm',
+     'archive': 'https://web.archive.org/web/20140806003750/http://www.al-jazirah.com:80/2014/20140305/cu2.htm'},
+]
+
+
+def sources_html():
+    items = ''.join(
+        f'<li><a href="{x["url"]}" target="_blank" rel="noopener">{e(x["title"])}</a>'
+        f'<span class="src-by">{e(x["by"])}'
+        + (f' · <a href="{x["archive"]}" target="_blank" rel="noopener">نسخة محفوظة</a>' if x.get('archive') else '')
+        + '</span></li>' for x in SOURCES)
+    return (f'<section class="sec" id="sources" style="padding-top:0"><div class="wrap"><div class="sources">'
+            f'<h2>عنه في المصادر</h2><p class="note" style="margin-top:0">صفحات خارجية تتحدث عن الدكتور الجميل ومؤلفاته، تُفتح في نافذة جديدة.</p>'
+            f'<ul class="src-list">{items}</ul></div></div></section>')
+
+
 def build_author(W):
     bio = load('bio.json', {})
     li = lambda xs: ''.join(f'<li>{e(x)}</li>' for x in xs)
@@ -458,6 +481,7 @@ def build_author(W):
 <div class="talks one">{"".join(video_html(v) for v in VIDEOS)}</div>
 </div>
 </div></section>
+{sources_html()}
 {YT_JS}'''
     ld = {"@context": "https://schema.org", "@type": "Person", "name": "محمد بن فارس الجميل", "birthPlace": "الزلفي",
           "jobTitle": "أستاذ التاريخ والحضارة الإسلامية", "affiliation": {"@type": "CollegeOrUniversity", "name": "جامعة الملك سعود"},
