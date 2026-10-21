@@ -165,7 +165,13 @@ VIDEOS = [
     {'mp4': '/media/hubasha.mp4', 'poster': '/media/hubasha.jpg',
      'title': 'سوق حُباشة: حيث تاجر النبي ﷺ لخديجة رضي الله عنها قبل الإسلام',
      'note': 'يتحدث الدكتور الجميل عن سوق حُباشة في ديار قبائل بارق، الذي باع فيه النبي ﷺ واشترى لخديجة رضي الله عنها قبل الإسلام. من لقاء على قناة الزاهرة.'},
-    {'yt': 'yY-IxGi09x8', 'title': 'بيوت النبي ﷺ وحجراته',
+    {'yt': 'xeZ7R3uBWQs', 'title': 'هل تمت تصفية يهود بني قريظة في المدينة؟',
+     'note': 'لقاء على قناة الزاهرة.', 'book': 'prophet-jews'},
+    {'yt': 'FnA1EkcuKJM', 'title': 'هل كان إجلاء اليهود من المدينة بقرار من الرسول ﷺ؟',
+     'note': 'لقاء على قناة الزاهرة.', 'book': 'prophet-jews-expulsion'},
+    {'yt': 'O01Dt5CxHV8', 'title': 'عام الوفود وآخر غزوة غزاها الرسول ﷺ: ماذا كان اسمها وإلى أين وجهتها؟',
+     'note': 'لقاء على قناة الزاهرة.', 'book': 'ghazwat-usra'},
+    {'yt': 'yY-IxGi09x8', 'title': 'بيوت النبي ﷺ وحجراته', 'book': 'prophet-houses',
      'note': 'لقاء يتحدث فيه الدكتور الجميل عن بيوت النبي ﷺ وحجراته.'},
 ]
 PLAY = '<span class="play"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>'
@@ -179,7 +185,10 @@ def video_html(v):
     else:
         player = (f'<div class="video" data-yt="{v["yt"]}"><button type="button" aria-label="شغّل لقاء: {e(v["title"])}">'
                   f'<img src="https://img.youtube.com/vi/{v["yt"]}/hqdefault.jpg" alt="" loading="lazy">{PLAY}</button></div>')
-    return f'<figure class="talk">{player}<figcaption><h3>{e(v["title"])}</h3><p>{e(v["note"])}</p></figcaption></figure>'
+    more = ''
+    if v.get('book') and v['book'] in TITLE_OF:
+        more = f' <a href="/books/{v["book"]}/">اقرأ المزيد في «{e(TITLE_OF[v["book"]])}»</a>'
+    return f'<figure class="talk">{player}<figcaption><h3>{e(v["title"])}</h3><p>{e(v["note"])}{more}</p></figcaption></figure>'
 
 
 def build_home(W):
@@ -541,8 +550,12 @@ def relativize(html_text, rel):
     return out
 
 
+TITLE_OF = {}
+
+
 def main():
     W = works()
+    TITLE_OF.update({w['slug']: w['title'] for w in W})
     if os.path.exists(DIST):
         shutil.rmtree(DIST)
     os.makedirs(DIST)
