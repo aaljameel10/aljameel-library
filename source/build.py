@@ -155,6 +155,8 @@ def citation(w):
         pub = w['publisher'] or ''
         return f'الجميل، محمد بن فارس. {t}. {pub}، {ar(w["year"])}م.'
     venue = w['edition'] or w['publisher']
+    if not venue:   # publication venue not documented: cite title and year only
+        return f'الجميل، محمد بن فارس. «{t}». {ar(w["year"])}م.'
     pr = f'، {w["pages_range"]}' if w['pages_range'] else ''
     return f'الجميل، محمد بن فارس. «{t}». {venue}{pr}.'.replace('..', '.')
 
