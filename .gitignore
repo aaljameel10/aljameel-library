@@ -3,3 +3,9 @@ node_modules/
 wrangler.local.toml
 wrangler.toml
 .dev.vars
+.pdfs-keep/
+# Large working PDFs (originals, upright copies, re-encoded scans). The published copies are in public/pdfs
+# and the originals are kept in the family Google Drive; the build falls back to public/pdfs without them.
+library/pdfs/
+library/fixed/
+library/web/
