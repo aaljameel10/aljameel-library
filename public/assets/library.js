@@ -54,49 +54,77 @@ function render() {
 }
 
 /* ---- full text ---- */
-let index = null, loading = null, timer = null;
-async function loadIndex() {
-  if (index) return index;
-  loading ??= Promise.all(works.map(w => fetch(new URL(`../data/search/${w.id}.json`, import.meta.url)).then(r => r.ok ? r.json() : []).catch(() => [])
-    .then(pages => [w, pages.map(([p, t]) => [p, t, fold(t)])]))).then(all => (index = all));
-  return loading;
+// Each work's page texts load on demand, a few at a time, and stay in memory for later searches
+// (the browser also keeps them for a day). Results appear as each work finishes loading.
+const texts = new Map();   // work id -> Promise<[[page, text, folded], ...]>
+function loadWork(w) {
+  if (!texts.has(w.id)) {
+    texts.set(w.id, fetch(new URL(`../data/search/${w.id}.json`, import.meta.url))
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(pages => pages.map(([p, t]) => [p, t, fold(t)]))
+      .catch(() => { texts.delete(w.id); return null; }));   // null = failed this time; retried next search
+  }
+  return texts.get(w.id);
 }
 function esc(s) { return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function findIn(pages, fq) {
+  const snips = [];
+  for (const [p, text, f] of pages) {
+    const i = f.indexOf(fq);
+    if (i < 0) continue;
+    const a = Math.max(0, text.lastIndexOf(' ', Math.max(0, i - 70))), bb = text.indexOf(' ', Math.min(text.length, i + fq.length + 70));
+    const b = bb < 0 ? text.length : bb;
+    snips.push({ p, html: esc(text.slice(a, i)) + '<mark>' + esc(text.slice(i, i + fq.length)) + '</mark>' + esc(text.slice(i + fq.length, b)) });
+  }
+  return snips;
+}
+
+let run = 0, timer = null;
 function deepSearch() {
   clearTimeout(timer);
+  const my = ++run;   // a newer search makes this one stop updating the page
   hitsBox.replaceChildren();
   const nq = norm(state.q);
   const fq = fold(nq);
   if (!state.deep || nq.length < 3) return;
   timer = setTimeout(async () => {
-    hitsBox.innerHTML = '<p class="hits-note">جارٍ البحث في نصوص الكتب…</p>';
-    const idx = await loadIndex();
-    if (norm(state.q) !== nq) return;
+    const scope = works.filter(w => (state.type === 'all' || w.type === state.type) && (state.theme === 'all' || w.theme === state.theme));
     const results = [];
-    for (const [w, pages] of idx) {
-      if ((state.type !== 'all' && w.type !== state.type) || (state.theme !== 'all' && w.theme !== state.theme)) continue;
-      const snips = [];
-      for (const [p, text, f] of pages) {
-        const i = f.indexOf(fq);
-        if (i < 0) continue;
-        const a = Math.max(0, text.lastIndexOf(' ', Math.max(0, i - 70))), bb = text.indexOf(' ', Math.min(text.length, i + fq.length + 70));
-        const b = bb < 0 ? text.length : bb;
-        snips.push({ p, html: esc(text.slice(a, i)) + '<mark>' + esc(text.slice(i, i + fq.length)) + '</mark>' + esc(text.slice(i + fq.length, b)) });
+    let done = 0, failed = 0, frame = 0;
+    const paint = final => {
+      if (my !== run) return;
+      const sorted = [...results].sort((a, b) => b.snips.length - a.snips.length);
+      const totalPages = sorted.reduce((n, r) => n + r.snips.length, 0);
+      const progress = final ? '' : `<p class="hits-note" role="status">جارٍ البحث في نصوص الكتب… بُحث في ${toAr(done)} من ${toAr(scope.length)}</p>`;
+      const failNote = final && failed ? `<p class="hits-note">تعذّر تحميل نصوص ${toAr(failed)} من المؤلفات، فقد تكون النتائج ناقصة. أعد البحث بعد قليل.</p>` : '';
+      if (!sorted.length) {
+        hitsBox.innerHTML = progress + (final ? `<p class="hits-note">لم ترد «${esc(state.q)}» في نصوص الكتب. جرّب كلمة أقصر أو صيغة أخرى.</p>` + failNote : '');
+        if (final) empty.hidden = grid.querySelector('.work:not([hidden])') !== null;
+        return;
       }
-      if (snips.length) results.push({ w, snips });
-    }
-    results.sort((a, b) => b.snips.length - a.snips.length);
-    const totalPages = results.reduce((n, r) => n + r.snips.length, 0);
-    if (!results.length) {
-      hitsBox.innerHTML = `<p class="hits-note">لم ترد «${esc(state.q)}» في نصوص الكتب. جرّب كلمة أقصر أو صيغة أخرى.</p>`;
-      empty.hidden = grid.querySelector('.work:not([hidden])') !== null;
-      return;
-    }
-    empty.hidden = true;
-    hitsBox.innerHTML = `<h2 class="sr">نتائج من داخل الكتب</h2><p class="hits-note">وردت «${esc(state.q)}» داخل النصوص في ${toAr(totalPages)} صفحة، وعدد المؤلفات التي وردت فيها: ${toAr(results.length)}. النص مستخرج آلياً من الصفحات المصوّرة، فقد يفوته بعض المواضع.</p>` +
-      results.map(r => `<article class="hit"><h3><a href="${bookUrl(r.w.slug)}">${esc(r.w.title)}</a></h3><ul class="snips">${
-        r.snips.slice(0, 4).map(s => `<li>…${s.html}… <a href="${bookUrl(r.w.slug, s.p)}">صفحة الملف ${toAr(s.p)}</a></li>`).join('')
-      }${r.snips.length > 4 ? `<li><a href="${bookUrl(r.w.slug)}">و${toAr(r.snips.length - 4)} مواضع أخرى</a></li>` : ''}</ul></article>`).join('');
+      empty.hidden = true;
+      hitsBox.innerHTML = progress + `<h2 class="sr">نتائج من داخل الكتب</h2><p class="hits-note"${final ? ' role="status"' : ''}>وردت «${esc(state.q)}» داخل النصوص في ${toAr(totalPages)} صفحة، وعدد المؤلفات التي وردت فيها: ${toAr(sorted.length)}${final ? '' : ' حتى الآن'}. النص مستخرج آلياً من الصفحات المصوّرة، فقد يفوته بعض المواضع.</p>` + failNote +
+        sorted.map(r => `<article class="hit"><h3><a href="${bookUrl(r.w.slug)}">${esc(r.w.title)}</a></h3><ul class="snips">${
+          r.snips.slice(0, 4).map(s => `<li>…${s.html}… <a href="${bookUrl(r.w.slug, s.p)}">صفحة الملف ${toAr(s.p)}</a></li>`).join('')
+        }${r.snips.length > 4 ? `<li><a href="${bookUrl(r.w.slug)}">و${toAr(r.snips.length - 4)} مواضع أخرى</a></li>` : ''}</ul></article>`).join('');
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(() => { frame = 0; paint(false); }); };
+    paint(false);
+    const queue = [...scope];
+    const worker = async () => {
+      for (let w; (w = queue.shift());) {
+        const pages = await loadWork(w);
+        if (my !== run) return;
+        done++;
+        if (!pages) failed++;
+        else { const snips = findIn(pages, fq); if (snips.length) results.push({ w, snips }); }
+        schedule();
+      }
+    };
+    await Promise.all(Array.from({ length: 4 }, worker));
+    if (my !== run) return;
+    cancelAnimationFrame(frame); frame = 0;
+    paint(true);
   }, 250);
 }
 

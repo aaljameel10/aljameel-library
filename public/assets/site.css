@@ -309,3 +309,5 @@ bdi[dir=ltr]{white-space:nowrap;unicode-bidi:isolate}
 .src-list li{padding:16px 0;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:4px}
 .src-list li>a{font-weight:600;line-height:1.7}
 .src-by{font-size:14px;color:var(--muted-2)}
+.cite-box,.panel .note{overflow-wrap:anywhere}
+.cite-box i{font-style:normal;font-weight:600}

@@ -43,6 +43,7 @@ def pdf_pages(path):
 def works():
     base = load('base.json', [])
     toc, research, summ = load('toc.json', {}), load('research.json', {}), load('summaries.json', {})
+    cites = load('cite.json', {})
     out = []
     for w in base:
         i = w['id']
@@ -52,6 +53,7 @@ def works():
         w['offset'] = t.get('offset', 0)
         w['edition'] = t.get('meta') or r.get('venue', '')
         w['pages_range'] = r.get('pages', '')
+        w['cite'] = cites.get(i, {'kind': 'unknown'})
         w['summary'] = s.get('summary', '')
         w['findings'] = s.get('findings', [])
         w['quotes'] = s.get('quotes') or ([s['quote']] if s.get('quote') else [])
@@ -189,6 +191,42 @@ def video_html(v):
     if v.get('book') and v['book'] in TITLE_OF:
         more = f' <a href="/books/{v["book"]}/">اقرأ المزيد في «{e(TITLE_OF[v["book"]])}»</a>'
     return f'<figure class="talk">{player}<figcaption><h3>{e(v["title"])}</h3><p>{e(v["note"])}{more}</p></figcaption></figure>'
+
+
+def cite_styles(w):
+    """APA 7 and Chicago (bibliography) entries built only from the documented fields in cite.json.
+    Returns [(label, html)]; italics mark the journal or book title, as each style requires."""
+    c, y = w['cite'], w['cite'].get('year') or w['year']
+    sub = w['subtitle'] or ''
+    title = c.get('title') or (w['title'] + (f' {sub}' if sub.startswith('(') else f': {sub}' if sub else ''))
+    i = lambda t: f'<i>{e(t)}</i>'
+    author_apa, author_chi = 'الجميل، م. ف.', 'الجميل، محمد بن فارس.'
+    if c.get('original_author'):
+        last, first = c['original_author']
+        author_apa, author_chi = f'{last}، {first[0]}.', f'{last}، {first}.'
+    tr_apa = ' (م. ف. الجميل، مترجم)' if c.get('original_author') else ''
+    tr_chi = ' ترجمة محمد بن فارس الجميل.' if c.get('original_author') else ''
+    k = c['kind']
+    if k == 'article':
+        vol, iss, pg = c.get('volume'), c.get('issue'), c.get('pages')
+        loc_apa = (f'، {vol}' + (f'({iss})' if iss else '') if vol else (f'، العدد {iss}' if iss else '')) + (f'، {pg}' if pg else '')
+        apa = f'{e(author_apa)} ({y}). {e(title)}{e(tr_apa)}. {i(c["journal"])}{e(loc_apa)}.'
+        loc_chi = (f' {vol}' if vol else '') + (f'، العدد {iss}' if iss else '')
+        chi = f'{e(author_chi)} «{e(title)}».{e(tr_chi)} {i(c["journal"])}{e(loc_chi)} ({y})' + (f': {e(pg)}' if pg else '') + '.'
+    elif k == 'chapter':
+        apa = f'{e(author_apa)} ({y}). {e(title)}. في {i(c["book"])} (ص. {e(c["pages"])}). {e(c["publisher"])}.'
+        chi = f'{e(author_chi)} «{e(title)}». في {i(c["book"])}، {e(c["pages"])}. {e(c["publisher"])}، {y}.'
+    elif k == 'book':
+        ed_apa = f' (ط. {c["edition"]})' if c.get('edition') else ''
+        ser = f' ({e(c["series"])})' if c.get('series') else ''
+        apa = f'{e(author_apa)} ({y}). {i(title)}{e(ed_apa)}{ser}. {e(c["publisher"])}.'
+        ed_chi = f' ط. {c["edition"]}.' if c.get('edition') else ''
+        ser_chi = f' {e(c["series"])}.' if c.get('series') else ''
+        chi = f'{e(author_chi)} {i(title)}.{e(ed_chi)}{ser_chi} {e(c["place"])}: {e(c["publisher"])}، {y}.'
+    else:   # publication venue not documented: author, year and title only
+        apa = f'{e(author_apa)} ({y}). {i(title)}.'
+        chi = f'{e(author_chi)} {i(title)}. {y}.'
+    return [('APA (الإصدار السابع)', apa), ('شيكاغو', chi)]
 
 
 def build_home(W):
@@ -371,8 +409,13 @@ def build_book(w, W):
                      (f' <a href="#p{q["pdf"]}" data-open-reader="{q["pdf"]}">افتح الصفحة</a>' if q.get('pdf') else '') + '</figcaption></figure>' for q in w['quotes'])
         add('quotes', 'مقتطفات', qs)
     cite = citation(w)
+    styles = ''.join(f'<p class="cite-label">{e(lbl)}</p><div class="cite-box" id="cite-{n}">{html_}</div>'
+                     f'<button class="btn ghost" type="button" data-copy="cite-{n}" data-label="نسخ التوثيق">نسخ التوثيق</button>'
+                     for n, (lbl, html_) in enumerate(cite_styles(w)))
+    gap = ('<p class="note">لم تُذكر بيانات النشر لهذا العمل في الملف، فاقتصر التوثيق على المؤلف والعنوان والسنة.</p>'
+           if w['cite']['kind'] == 'unknown' else '')
     add('cite', 'التوثيق', f'<p class="cite-label">التوثيق العربي</p><div class="cite-box" id="cite-ar">{e(cite)}</div>'
-        f'<button class="btn ghost" type="button" data-copy="cite-ar" data-label="نسخ التوثيق">نسخ التوثيق</button>'
+        f'<button class="btn ghost" type="button" data-copy="cite-ar" data-label="نسخ التوثيق">نسخ التوثيق</button>' + styles + gap +
         f'<p class="note">رابط هذه الصفحة: <span dir="ltr">{SITE}/books/{w["slug"]}/</span></p>')
 
     tabh = ''.join(f'<button class="tab" role="tab" id="tab-{k}" aria-controls="panel-{k}" aria-selected="{str(i == 0).lower()}" tabindex="{0 if i == 0 else -1}">{e(l)}</button>' for i, (k, l) in enumerate(tabs))
