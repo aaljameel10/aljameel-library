@@ -676,7 +676,10 @@ def main():
     write('robots.txt', f'User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: {SITE}/sitemap.xml\n')
     write('admin/index.html', open(os.path.join(HERE, 'src', 'admin.html'), encoding='utf-8').read()
           .replace('/*TITLES*/{}', json.dumps({w['slug']: w['title'] for w in W}, ensure_ascii=False).replace('<', '\\u003c')))
-    write('_redirects', '/library /library/ 301\n/author /author/ 301\n/biography /author/ 301\n/videos /#talks 301\n/gallery /author/ 301\n/photos /author/ 301\n' +
+    # Old addresses from the previous site: section pages, and each work's page at /library/<id>.
+    write('_redirects', '/library /library/ 301\n/author /author/ 301\n/biography /author/ 301\n/videos /#talks 301\n/interviews /#talks 301\n'
+          '/gallery /author/ 301\n/photos /author/ 301\n/books /library/ 301\n/books/ /library/ 301\n' +
+          ''.join(f'/library/{w["id"]} /books/{w["slug"]}/ 301\n' for w in W) +
           ''.join(f'/books/{w["slug"]} /books/{w["slug"]}/ 301\n' for w in W))
     # Security headers for every page (tested with the PDF reader, fonts and the YouTube player), then caching rules.
     write('_headers', "/*\n  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://img.youtube.com; font-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; media-src 'self'; worker-src 'self' blob:; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()\n  X-Frame-Options: SAMEORIGIN\n/admin/*\n  Cache-Control: no-store\n  X-Robots-Tag: noindex\n/pdfs/*\n  Cache-Control: public, max-age=86400\n/media/*\n  Cache-Control: public, max-age=86400\n/data/*\n  Cache-Control: public, max-age=86400\n/assets/*\n  Cache-Control: public, max-age=3600\n")
