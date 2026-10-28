@@ -4,6 +4,7 @@ const API = new URL('../api/stats', import.meta.url).href;
 const toAr = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 
 function send(slug, kind) {
+  if (navigator.webdriver) return;   // automated browsers (site checks) are not counted
   const body = JSON.stringify({ slug, kind });
   try {
     if (navigator.sendBeacon) navigator.sendBeacon(API, new Blob([body], { type: 'application/json' }));

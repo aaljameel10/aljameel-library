@@ -91,13 +91,13 @@ def cover(w, lg=False, link=True):
     return f'<div class="{cls}" aria-hidden="true">{inner}</div>'
 
 
-def page(path, title, desc, body, current='', extra_head='', scripts='', og_image='/og.jpg', jsonld=None):
+def page(path, title, desc, body, current='', extra_head='', scripts='', og_image='/og.jpg', jsonld=None, doc_title=None):
     url = SITE + path
     nav = [('/', 'الرئيسية', 'home'), ('/library/', 'المكتبة', 'library'),
            ('/library/?type=research', 'الأبحاث المحكّمة', 'research'), ('/author/', 'عن المؤلف', 'author')]
     navh = ''.join(f'<a href="{h}"{" aria-current=page" if k == current else ""}>{t}</a>' for h, t, k in nav)
     ld = f'<script type="application/ld+json">{json.dumps(jsonld, ensure_ascii=False)}</script>' if jsonld else ''
-    full_title = title if 'مكتبة' in title and current == 'home' else f'{title} | مكتبة د. محمد الجميل'
+    full_title = doc_title or (title if 'مكتبة' in title and current == 'home' else f'{title} | مكتبة د. محمد الجميل')
     return f'''<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -387,6 +387,52 @@ def scholar_meta(w):
     return ''.join(f'<meta name="{k}" content="{e(v)}">' for k, v in m)
 
 
+TYPE_ONE = {'book': 'كتاب', 'research': 'بحث', 'article': 'مقال'}
+PBUH_OCR = re.compile(r'(النبي|الرسول|رسول الله|نبي الله)\s+(?:يك|مك|ملة|يل|يه|ب|4|كله|كل|كك|ول|وَل|عد|يي|يله|يه|يي|يكلةٍ|كَل|ِل|لَك|8|88|22|23|46|47)(?=[\s.،؛:)\]»]|$)')
+
+
+def search_desc(w):
+    """Description shown under the result in Google: whole sentences from the summary, then what the visitor gets."""
+    tail = ' اقرأه كاملاً أو حمّله PDF مجاناً.'
+    s_ = w['summary'] or f'{TYPE_ONE[w["type"]]} للدكتور محمد بن فارس الجميل: {w["title"]}.'
+    out = ''
+    for sent in re.split(r'(?<=\.)\s+', s_):
+        if len(out) + len(sent) > 135:
+            break
+        out += (' ' if out else '') + sent
+    if not out:
+        cut = s_[:125]
+        out = cut[:cut.rfind(' ')].rstrip('،؛:,') + '…'
+    return out + tail
+
+
+def text_excerpt(w, words=('مقدم',), label=''):
+    """Machine-read text of the first page(s) of a section (from the search data), lightly cleaned."""
+    item = next((x for x in w['toc'] if any(k in x[0] for k in words)), None)
+    src = os.path.join(LIB, 'site-data', 'search', f'{w["id"]}.json')
+    if not item or not os.path.exists(src):
+        return None
+    pages = dict(map(tuple, json.load(open(src, encoding='utf-8'))))
+    pdf = item[2]
+    text = ' '.join(pages.get(p, '') for p in (pdf, pdf + 1)).strip()
+    if len(text) < 200:
+        return None
+    text = re.sub(r'^\D{0,40}?\d+\s+', '', text)            # running header and page number at the top
+    m = re.match(r'^.{0,60}?(?:مقدم|خاتم|خلاص|تمهيد)\S*\s*:?\s*', text)
+    if m:
+        text = text[m.end():]                                  # the section heading itself
+    text = re.sub(r'^(?:ال)?\S{3,6}\s+(?=إن\s)', '', text)     # a misread heading word before the opening «إن»
+    text = re.sub(r'(?<=[تةهكنسجحخعغقصضظ])ء(?=\s)', '،', text)  # OCR reads the Arabic comma as hamza
+    text = re.sub(r'(?<=[»)])0|(?<=\s)0(?=\s)', '', text)      # stray footnote marks
+    text = PBUH_OCR.sub(r'\1 ﷺ', text)
+    text = re.sub(r'\s*\(?\d{1,3}\)\s*(?=[.،\s])', ' ', text)   # footnote markers
+    text = re.sub(r'\s+', ' ', text)
+    if len(text) > 1100:
+        text = text[:1100]
+        text = text[:text.rfind(' ')] + '…'
+    return pdf, item[0], text
+
+
 def build_book(w, W):
     related = [x for x in W if x['theme'] == w['theme'] and x['id'] != w['id']][:4]
     tabs, panels = [], []
@@ -402,6 +448,14 @@ def build_book(w, W):
         about = f'<p>{e(w["summary"])}</p>'
         if w['findings']:
             about += '<h2 style="font-size:26px;margin-top:30px">أبرز ما انتهى إليه</h2><ul class="findings">' + ''.join(f'<li>{e(f)}</li>' for f in w['findings']) + '</ul>'
+    # The opening and closing pages as machine-read text, so readers (and search engines) can see the wording.
+    for words, label in ((('مقدم', 'تمهيد'), 'من المقدمة'), (('الخاتمة', 'خاتمة', 'الخلاصة'), 'من الخاتمة')):
+        x = text_excerpt(w, words)
+        if x:
+            pdf, sec, txt = x
+            about += (f'<details class="ocr-x"><summary>{label}: نص الصفحات الأولى من «{e(sec)}»</summary><p>{e(txt)}</p>'
+                      f'<p class="note">نص مستخرج آلياً من صفحات {"الكتاب" if w["type"] == "book" else "البحث"} المصوّرة، وقد يقع فيه خطأ في بعض الكلمات؛ '
+                      f'المرجع هو الصفحة نفسها. <a href="#p{pdf}" data-open-reader="{pdf}">افتح الصفحة</a></p></details>')
     add('about', 'نبذة' if w['type'] != 'book' else 'نبذة عن الكتاب', about)
     add('toc', 'الفهرس', toc_html(w))
     if w['quotes']:
@@ -496,7 +550,8 @@ def build_book(w, W):
 
 {f'<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-head"><h2>من المحور نفسه</h2><a class="link" href="/library/?theme={w["theme"]}">كل مؤلفات المحور</a></div><div class="shelf">{"".join(work_card(x) for x in related)}</div></div></section>' if related else ''}'''
 
-    desc = (w['summary'][:150].rsplit(' ', 1)[0] + '…') if w['summary'] else f'{TYPES[w["type"]]} للدكتور محمد بن فارس الجميل: {w["title"]}. اقرأه أو حمّله مجاناً.'
+    desc = search_desc(w)
+    doc_title = f'{w["title"]} – {TYPE_ONE[w["type"]]} د. محمد بن فارس الجميل (PDF)'
     schema_type = 'Book' if w['type'] == 'book' else 'ScholarlyArticle'
     ld = {"@context": "https://schema.org", "@type": schema_type, "name": w['title'] + (f': {w["subtitle"]}' if w['subtitle'] else ''),
           "author": {"@type": "Person", "name": "محمد بن فارس الجميل"}, "inLanguage": "ar", "datePublished": str(w['year']),
@@ -505,7 +560,7 @@ def build_book(w, W):
         ld['publisher' if w['type'] == 'book' else 'isPartOf'] = {"@type": "Organization" if w['type'] == 'book' else "Periodical", "name": w['publisher']}
     return page(f'/books/{w["slug"]}/', w['title'], desc, body, 'library',
                 scripts='<script type="module" src="/assets/book.js"></script><script type="module" src="/assets/reader.js"></script><script type="module" src="/assets/stats.js"></script><script type="module" src="/assets/comments.js"></script>',
-                extra_head=scholar_meta(w) + '<link rel="modulepreload" href="/vendor/pdfjs/pdf.min.mjs">', jsonld=ld)
+                extra_head=scholar_meta(w) + '<link rel="modulepreload" href="/vendor/pdfjs/pdf.min.mjs">', jsonld=ld, doc_title=doc_title)
 
 
 SOURCES = [
