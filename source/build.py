@@ -572,6 +572,8 @@ SOURCES = [
     {'title': 'عرض كتاب «أزواج النبي ﷺ: دراسة للعلاقة بين النبي وأزواجه»', 'by': 'صحيفة الجزيرة، ٥ مارس ٢٠١٤م',
      'url': 'https://www.al-jazirah.com/2014/20140305/cu2.htm',
      'archive': 'https://web.archive.org/web/20140806003750/http://www.al-jazirah.com:80/2014/20140305/cu2.htm'},
+    {'title': 'د. الجميل يقدّم كتابه الجديد «نساء حول النبي ﷺ»', 'by': 'صحيفة الجزيرة، ١ مايو ٢٠١٦م',
+     'url': 'https://www.al-jazirah.com/2016/20160501/wo2.htm'},
 ]
 
 
