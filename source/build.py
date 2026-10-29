@@ -575,6 +575,10 @@ SOURCES = [
     {'title': 'د. الجميل يقدّم كتابه الجديد «نساء حول النبي ﷺ»', 'by': 'صحيفة الجزيرة، ١ مايو ٢٠١٦م',
      'url': 'https://www.al-jazirah.com/2016/20160501/wo2.htm',
      'archive': 'https://web.archive.org/web/20261029112800/https://www.al-jazirah.com/2016/20160501/wo2.htm'},
+    {'title': 'إعلان فوزه بجائزة الملك سلمان التقديرية للمتميزين من السعوديين في خدمة تاريخ الجزيرة العربية', 'by': 'دارة الملك عبدالعزيز، الحساب الرسمي على منصة X، ٢٦ أكتوبر ٢٠١٧م',
+     'url': 'https://x.com/Darahfoundation/status/923610772709756928'},
+    {'title': 'صفحة مؤلفاته على Goodreads: تقييمات القرّاء ومراجعاتهم', 'by': 'Goodreads',
+     'url': 'https://www.goodreads.com/author/show/3001726._'},
 ]
 
 
