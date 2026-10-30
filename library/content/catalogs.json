@@ -1,0 +1,161 @@
+{
+ "intro": "تظهر بعض مؤلفات الدكتور محمد بن فارس الجميل في فهارس مكتبات وجامعات خارج المملكة. تعرض هذه الصفحة بيانات السجلات الخارجية وروابطها لأغراض التوثيق والوصول إلى بيانات الطبعات. ولا يعني وجود سجل فهرسي أن النص الكامل متاح إلكترونيًا.",
+ "works": [
+  {
+   "slug": "hijra-habasha",
+   "title": "الهجرة إلى الحبشة: دراسة مقارنة للروايات",
+   "facts": [
+    [
+     "الطبعة",
+     "الثانية"
+    ],
+    [
+     "الناشر",
+     "دار الفيصل الثقافية، الرياض"
+    ],
+    [
+     "سنة النشر",
+     "٢٠٠٤م"
+    ],
+    [
+     "عدد الصفحات",
+     "١٤٩ صفحة"
+    ],
+    [
+     "ISBN",
+     "9960677311"
+    ]
+   ],
+   "records": [
+    {
+     "lib": "CiNii Books",
+     "country": "اليابان",
+     "url": "https://ci.nii.ac.jp/ncid/BA81137322",
+     "note": "يذكر السجل حيازة مكتبة مؤسسة طُويو بونكو، ورقم ضبط مكتبة الكونغرس LCCN: 2005337014."
+    },
+    {
+     "lib": "مكتبة اتحاد الإمارات",
+     "country": "الإمارات",
+     "url": "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=152369"
+    },
+    {
+     "lib": "دار الكتب الوطنية التونسية",
+     "country": "تونس",
+     "url": "https://www.bibliotheque.nat.tn/BNTK/doc/SYRACUSE/5882005",
+     "note": "رقم الحفظ الوارد في السجل: A-8-265557."
+    }
+   ]
+  },
+  {
+   "slug": "women-around-prophet",
+   "title": "نساء حول النبي ﷺ: دراسة للعلاقة بين النبي ﷺ ونساء مجتمع المدينة",
+   "facts": [
+    [
+     "الطبعة",
+     "الأولى"
+    ],
+    [
+     "الناشر",
+     "جداول، بيروت"
+    ],
+    [
+     "سنة النشر",
+     "٢٠١٦م"
+    ],
+    [
+     "عدد الصفحات",
+     "١٠٤ صفحات"
+    ],
+    [
+     "ISBN",
+     "9786144183076"
+    ]
+   ],
+   "records": [
+    {
+     "lib": "CiNii Books",
+     "country": "اليابان",
+     "url": "https://ci.nii.ac.jp/ncid/BC10511285",
+     "note": "يذكر السجل حيازة مكتبة جامعة طوكيو للدراسات الأجنبية، ورقم ضبط مكتبة الكونغرس LCCN: 2016352495."
+    }
+   ]
+  },
+  {
+   "slug": "prophet-jews",
+   "title": "النبي ﷺ ويهود المدينة: دراسة تحليلية لعلاقة الرسول ﷺ بيهود المدينة ومواقف المستشرقين منها",
+   "facts": [
+    [
+     "الطبعة",
+     "الثانية، ٢٠٠٦م"
+    ],
+    [
+     "الناشر",
+     "مركز الملك فيصل للبحوث والدراسات الإسلامية"
+    ],
+    [
+     "عدد الصفحات في السجل",
+     "٣٤٧ صفحة"
+    ],
+    [
+     "ISBN",
+     "996089052X"
+    ]
+   ],
+   "records": [
+    {
+     "lib": "مكتبة اتحاد الإمارات",
+     "country": "الإمارات",
+     "url": "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=152366&shelfbrowse_itemnumber=225679"
+    }
+   ],
+   "translation": {
+    "lang": "الإندونيسية",
+    "title": "Nabi Muhammad & Yahudi Madinah: Meluruskan Pandangan Keliru tentang Sikap Rasulullah terhadap Kaum Yahudi",
+    "facts": [
+     [
+      "المؤلف",
+      "Muhammad bin Faris al-Jamil"
+     ],
+     [
+      "المترجم",
+      "Indi Aunullah"
+     ],
+     [
+      "الناشر",
+      "Pustaka Alvabet، تانغيرانغ الجنوبية"
+     ],
+     [
+      "سنة النشر",
+      "٢٠٢٠م (الطبعة الأولى)"
+     ],
+     [
+      "عدد الصفحات",
+      "٣٨٩ صفحة"
+     ],
+     [
+      "ISBN",
+      "9786232200845"
+     ]
+    ],
+    "records": [
+     {
+      "lib": "مكتبة جاكرتا العامة",
+      "country": "إندونيسيا",
+      "url": "https://perpustakaan.jakarta.go.id/book/detail?cn=INLIS000000000844085"
+     },
+     {
+      "lib": "مكتبة وزارة الداخلية الإندونيسية",
+      "country": "إندونيسيا",
+      "url": "https://perpustakaan.kemendagri.go.id/opac/index.php?p=show_detail&id=6999",
+      "note": "مصدر بيانات المترجم وسنة النشر وعدد الصفحات."
+     },
+     {
+      "lib": "صفحة الكتاب عند الناشر Pustaka Alvabet",
+      "country": "إندونيسيا",
+      "url": "https://alvabet.co.id/index2.php?Itemid=71&category_id=11&flypage=flypage.tpl&option=com_virtuemart&page=shop.product_details&product_id=319"
+     }
+    ]
+   }
+  }
+ ]
+}

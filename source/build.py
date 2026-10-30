@@ -501,7 +501,7 @@ def build_book(w, W):
 <div>
 <div class="tags"><span class="tag">{e(TYPES[w["type"]])}</span><span class="tag">{e(THEMES[w["theme"]])}</span></div>
 <h1>{e(w["title"])}</h1>{sub}
-<dl class="facts-list">{facth}{counts}</dl>
+<dl class="facts-list">{facth}{counts}</dl>{catalog_line(w)}
 <div class="book-actions">
 <a class="btn" href="#reader" data-open-reader="0">{ICON["read"]}اقرأ هنا</a>
 <a class="btn ghost" href="{w["pdf"]}" download data-dl="{w["slug"]}">{ICON["down"]}تحميل PDF</a>
@@ -593,6 +593,90 @@ def sources_html():
             f'<ul class="src-list">{items}</ul></div></div></section>')
 
 
+KSU_CV = 'https://faculty.ksu.edu.sa/ar/node/110437'
+ACADEMIC = [
+    ('العمل الأكاديمي', [
+        'مدرّس مواد اجتماعية في متوسطة حطين بالرياض (١٣٩٣–١٣٩٥هـ / ١٩٧٣–١٩٧٥م)',
+        'معيد في كلية التربية، جامعة الملك سعود (١٩٧٥–١٩٧٩م)',
+        'أستاذ مساعد في قسم التاريخ، كلية الآداب، جامعة الملك سعود (١٤٠٥–١٤١٢هـ / ١٩٨٥–١٩٩٢م)',
+        'أستاذ مشارك (١٤١٣–١٤١٩هـ / ١٩٩٣–١٩٩٩م)',
+        'أستاذ (١٤١٩هـ / ١٩٩٩م)',
+    ]),
+    ('المهام العلمية', [
+        'عضو مجلس إدارة مركز البحوث بكلية الآداب، جامعة الملك سعود، فترتين (١٤١٥–١٤١٩هـ / ١٩٩٥–١٩٩٩م)',
+        'عضو هيئة تحرير مجلة جامعة الملك سعود – الآداب (٢٠٠١–٢٠٠٢م)',
+        'رئيس هيئة المحررين في مجلة جامعة الملك سعود – الآداب (٢٠٠٢–٢٠٠٣م)',
+        'مناقشة رسائل ماجستير وأطروحات دكتوراه، وتحكيم بحوث أكاديمية لجامعات المملكة وخارجها',
+    ]),
+    ('العضويات', [
+        'الجمعية التاريخية السعودية',
+        'اتحاد المؤرخين العرب، القاهرة',
+        'جمعية التاريخ والآثار لدول مجلس التعاون لدول الخليج العربية',
+    ]),
+    ('الندوات والمؤتمرات', [
+        'ندوة «ابن رشد وتأثيره في الفلسفة العربية»، جامعة هايدلبرغ، ألمانيا (١٤١٩هـ / ١٩٩٨م)',
+        'الندوة الخامسة: «التاريخ العربي: حقبه المختلفة في مرآة الاستشراق»، كلية الآداب، جامعة دمشق (ذو الحجة ١٤٢٠هـ / مارس ٢٠٠٠م)',
+        'الندوات العلمية للجمعية التاريخية السعودية (١٩٩٨ و٢٠٠٠ و٢٠٠٢ و٢٠٠٥م)',
+        'تمثيل جامعة الملك سعود في الندوة الموسعة «مكة عاصمة الثقافة الإسلامية»، القاهرة (يناير–فبراير ٢٠٠٦م)',
+    ]),
+]
+
+
+def academic_html():
+    groups = ''.join(f'<h3>{e(t)}</h3><ul class="plain-list">{"".join(f"<li>{e(x)}</li>" for x in xs)}</ul>' for t, xs in ACADEMIC)
+    return (f'<h2>المسيرة الأكاديمية والمشاركات العلمية</h2>'
+            f'<p class="note" style="margin-top:0">المصدر: <a href="{KSU_CV}" target="_blank" rel="noopener">السيرة الذاتية الرسمية في موقع جامعة الملك سعود</a>.</p>'
+            f'<div class="acad">{groups}</div>')
+
+
+def ltr_bits(t):
+    return re.sub(r'([A-Za-z0-9][A-Za-z0-9 .:&\-]*[A-Za-z0-9])', r'<bdi dir="ltr">\1</bdi>', e(t))
+
+
+def records_html(recs):
+    return '<ul class="cat-recs">' + ''.join(
+        f'<li><a href="{r["url"]}" target="_blank" rel="noopener">{e(r["lib"])}</a> <span class="cat-country">{e(r["country"])}</span>'
+        + (f'<span class="cat-note">{ltr_bits(r["note"])}</span>' if r.get('note') else '') + '</li>' for r in recs) + '</ul>'
+
+
+def facts_html(facts):
+    return '<dl class="cat-facts">' + ''.join(f'<div><dt>{e(a)}</dt><dd>{ltr_bits(b)}</dd></div>' for a, b in facts) + '</dl>'
+
+
+def catalogs_html(W):
+    c = load('catalogs.json', {})
+    if not c:
+        return ''
+    slugs = {w['slug'] for w in W}
+    cards = ''
+    for x in c['works']:
+        head = (f'<a href="/books/{x["slug"]}/">{e(x["title"])}</a>' if x['slug'] in slugs else e(x['title']))
+        tr = ''
+        if x.get('translation'):
+            t = x['translation']
+            tr = (f'<div class="cat-tr"><h4>الترجمة {e(t["lang"])}</h4><p class="cat-tr-title" dir="ltr" lang="id">{e(t["title"])}</p>'
+                  f'{facts_html(t["facts"])}<p class="cat-sub">سجلات الترجمة:</p>{records_html(t["records"])}</div>')
+        cards += (f'<article class="cat-card" id="cat-{x["slug"]}"><h3>{head}</h3><p class="cat-by">محمد بن فارس الجميل</p>'
+                  f'{facts_html(x["facts"])}<p class="cat-sub">سجل فهرسي خارجي:</p>{records_html(x["records"])}{tr}</article>')
+    return (f'<section class="sec" id="catalogs" style="padding-top:0"><div class="wrap"><div class="sources">'
+            f'<h2>مؤلفات الدكتور في فهارس المكتبات</h2><p class="note" style="margin-top:0">{e(c["intro"])}</p>'
+            f'<div class="cat-grid">{cards}</div></div></div></section>')
+
+
+def catalog_line(w):
+    c = load('catalogs.json', {})
+    x = next((x for x in c.get('works', []) if x['slug'] == w['slug']), None)
+    if not x:
+        return ''
+    where = []
+    for r in x['records']:
+        if r['country'] not in where:
+            where.append(r['country'])
+    tr = ' وصدرت له ترجمة إندونيسية (٢٠٢٠م).' if x.get('translation') else ''
+    return (f'<p class="note cat-line">في فهارس مكتبات خارج المملكة: {"، ".join(e(p) for p in where)}.{tr} '
+            f'<a href="/author/#cat-{x["slug"]}">السجلات</a></p>')
+
+
 def build_author(W):
     bio = load('bio.json', {})
     li = lambda xs: ''.join(f'<li>{e(x)}</li>' for x in xs)
@@ -610,7 +694,7 @@ def build_author(W):
 <h2>الجوائز</h2><ul class="plain-list">{li(bio.get("awards", []))}</ul>
 <figure class="award-photo"><img src="/media/award-2017.jpg" alt="الدكتور محمد بن فارس الجميل يتسلّم جائزة الملك سلمان التقديرية من خادم الحرمين الشريفين الملك سلمان بن عبدالعزيز" width="400" height="307" loading="lazy">
 <figcaption>الدكتور محمد بن فارس الجميل يتسلّم جائزة الملك سلمان التقديرية للمتميزين في خدمة تاريخ الجزيرة العربية من خادم الحرمين الشريفين الملك سلمان بن عبدالعزيز، ٢٠١٧م.</figcaption></figure>
-<h2>المهام العلمية</h2><ul class="plain-list">{li(bio.get("roles", []))}</ul>
+{academic_html()}
 </div>
 <div>
 <figure class="portrait" style="margin-bottom:14px"><img src="/img/portrait.jpg" alt="الدكتور محمد بن فارس الجميل" width="400" height="500"></figure>
@@ -619,6 +703,7 @@ def build_author(W):
 <div class="talks one">{"".join(video_html(v) for v in VIDEOS)}</div>
 </div>
 </div></section>
+{catalogs_html(W)}
 {sources_html()}
 {YT_JS}'''
     ld = {"@context": "https://schema.org", "@type": "Person", "name": "محمد بن فارس الجميل", "birthPlace": "الزلفي",
