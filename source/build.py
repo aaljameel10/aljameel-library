@@ -741,6 +741,17 @@ def relativize(html_text, rel):
 
 
 TITLE_OF = {}
+_VER = {}
+
+
+def asset_ver(name):
+    if name not in _VER:
+        import hashlib
+        src = os.path.join(HERE, 'src', 'assets', name)
+        _VER[name] = hashlib.sha1(open(src, 'rb').read()).hexdigest()[:8] if os.path.exists(src) else '1'
+    return _VER[name]
+
+
 KEEP = os.path.join(os.path.dirname(os.path.abspath(DIST)), '.pdfs-keep')
 
 
@@ -764,6 +775,10 @@ def main():
         os.makedirs(os.path.dirname(p), exist_ok=True)
         if PREVIEW and rel.endswith('.html'):
             text = relativize(text, rel)
+        elif rel.endswith('.html'):
+            # Version stylesheet and script links by content, so browsers fetch the new file after each update.
+            text = re.sub(r'(["\'])/assets/([\w.-]+\.(?:css|js))\1',
+                          lambda m: f'{m.group(1)}/assets/{m.group(2)}?v={asset_ver(m.group(2))}{m.group(1)}', text)
         open(p, 'w', encoding='utf-8').write(text)
 
     write('index.html', build_home(W))
