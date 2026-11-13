@@ -349,3 +349,9 @@ bdi[dir=ltr]{white-space:nowrap;unicode-bidi:isolate}
 .cover.photo{padding:0;background:#fff}
 .cover.photo::before{display:none}
 .cover.photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center top}
+.brief{padding:28px 0 32px}
+.brief .wrap{max-width:860px}
+.brief h2{font-size:24px;margin-bottom:12px}
+.brief ul{margin:0;padding-inline-start:1.2em;display:grid;gap:8px}
+.brief li::marker{color:var(--gold)}
+.brief .note{margin-top:12px}

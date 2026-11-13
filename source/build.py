@@ -57,6 +57,10 @@ def works():
         w['summary'] = s.get('summary', '')
         w['findings'] = s.get('findings', [])
         w['quotes'] = s.get('quotes') or ([s['quote']] if s.get('quote') else [])
+        # Optional search-facing extras for works people search for by topic: a question-style title and
+        # description for Google, and a short "in brief" list shown at the top of the page.
+        w['seo_title'], w['seo_desc'] = s.get('seo_title', ''), s.get('seo_desc', '')
+        w['brief'], w['brief_title'] = s.get('brief', []), s.get('brief_title', '')
         w['pdf'] = f'/pdfs/{w["slug"]}.pdf'
         # web = re-encoded heavy scans, fixed = upright copies, pdfs = originals. These large folders are kept
         # out of Git; without them the build reuses the PDF already published in public/pdfs (see KEEP below).
@@ -514,6 +518,9 @@ def build_book(w, W):
     orig = (f'<img class="orig" src="{w["cover"]}" alt="الغلاف الأصلي: {e(w["title"])}" loading="lazy"><small>الغلاف الأصلي</small>'
             if w['cover'] and w['id'] in NO_PHOTO_COVER else '')
     sub = f'<p class="subtitle">{e(w["subtitle"])}</p>' if w['subtitle'] else ''
+    brief = (f'<section class="brief"><div class="wrap"><h2>{e(w["brief_title"])}</h2><ul>'
+             + ''.join(f'<li>{e(x)}</li>' for x in w['brief'])
+             + f'</ul><p class="note">ملخّص من {"الكتاب" if w["type"] == "book" else "البحث"} نفسه، والتفاصيل والمصادر في النص الكامل.</p></div></section>') if w['brief'] else ''
 
     body = f'''
 <section class="book-head"><div class="wrap">
@@ -531,7 +538,7 @@ def build_book(w, W):
 </div>
 </div></div>
 </div></section>
-
+{brief}
 <section style="background:var(--paper-2);border-block:1px solid var(--rule)"><div class="wrap">
 <div class="tabs" role="tablist" aria-label="أقسام الصفحة">{tabh}</div>
 {panh}
@@ -572,8 +579,8 @@ def build_book(w, W):
 
 {f'<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-head"><h2>من المحور نفسه</h2><a class="link" href="/library/?theme={w["theme"]}">كل مؤلفات المحور</a></div><div class="shelf">{"".join(work_card(x) for x in related)}</div></div></section>' if related else ''}'''
 
-    desc = search_desc(w)
-    doc_title = f'{w["title"]} – {TYPE_ONE[w["type"]]} د. محمد بن فارس الجميل (PDF)'
+    desc = w['seo_desc'] or search_desc(w)
+    doc_title = w['seo_title'] or f'{w["title"]} – {TYPE_ONE[w["type"]]} د. محمد بن فارس الجميل (PDF)'
     schema_type = 'Book' if w['type'] == 'book' else 'ScholarlyArticle'
     ld = {"@context": "https://schema.org", "@type": schema_type, "name": w['title'] + (f': {w["subtitle"]}' if w['subtitle'] else ''),
           "author": {"@type": "Person", "name": "محمد بن فارس الجميل"}, "inLanguage": "ar", "datePublished": str(w['year']),
