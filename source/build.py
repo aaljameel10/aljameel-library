@@ -290,6 +290,7 @@ def build_home(W):
 <div><dt>سنوات النشر</dt><dd>{ar(min(w["year"] for w in W))}–{ar(max(w["year"] for w in W))}</dd></div>
 <div><dt>مرتان: جائزة الملك سلمان</dt><dd>٢٠١٢ و٢٠١٧</dd></div>
 </dl></div></section>
+{quote}
 
 <section class="sec band feature"><div class="wrap">
 <div>{cover(feat, lg=True, link=False)}</div>
@@ -312,7 +313,6 @@ def build_home(W):
 <div class="shelf">{"".join(work_card(w) for w in latest)}</div>
 </div></section>
 
-{quote}
 
 <section class="sec" id="talks"><div class="wrap">
 <div class="sec-head"><h2>لقاءات مصوّرة</h2></div>
