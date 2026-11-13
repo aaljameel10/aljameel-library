@@ -259,7 +259,7 @@ def build_home(W):
         f'{("، " + e(q["p"])) if q.get("p") else ""}</figcaption></figure>'
         for i, (w, q) in enumerate(strip))
     quote = (f'<section class="sec sand" aria-roledescription="carousel" aria-label="مقتطفات من مؤلفات الدكتور">'
-             f'<div class="wrap quote qs" data-count="{len(strip)}">{STAR.format(cls="star", c="#8A5F17")}'
+             f'<div class="wrap quote qs">{STAR.format(cls="star", c="#8A5F17")}'
              f'<div class="qs-track" aria-live="polite">{slides}</div>'
              f'<div class="qs-nav"><button type="button" class="qs-prev" aria-label="المقتطف السابق">&#8594;</button>'
              f'<span class="qs-count"><span class="qs-n">١</span> / {ar(len(strip))}</span>'
