@@ -6,7 +6,7 @@
   --gold:#8A5F17; --gold-light:#D9B26A; --on-dark:#F5F0E6; --on-dark-2:#E3D9C3;
   --t-sira:#1F3A5F; --t-yahud:#5A2E2A; --t-madi:#2F4A3A; --t-hadara:#4A3B5C;
   --solid:#13233A; --on-solid:#F5F0E6; --band:#13233A; --mark:#F1DFA9; --ok:#2F6B45; --err:#A3342B;
-  --display:'Amiri',serif; --ui:'IBM Plex Sans Arabic',system-ui,sans-serif;
+  --display:'Noto Naskh Arabic',serif; --ui:'Noto Naskh Arabic',system-ui,sans-serif;
   --wrap:1200px; --r:4px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){

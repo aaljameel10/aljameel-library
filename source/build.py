@@ -113,8 +113,8 @@ def page(path, title, desc, body, current='', extra_head='', scripts='', og_imag
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#13233A">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="/fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/amiri-arabic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/noto-naskh-arabic-arabic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/noto-naskh-arabic-arabic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts.css">
 <link rel="stylesheet" href="/assets/site.css">
 {extra_head}{ld}
@@ -715,7 +715,7 @@ def build_author(W):
 
 
 PREVIEW = os.environ.get('PREVIEW') == '1'
-GF = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">'
+GF = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap">'
 
 
 def relativize(html_text, rel):
@@ -800,7 +800,7 @@ def main():
         src = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', lambda m: '\\x%02x' % ord(m.group(0)), src)
         open(os.path.join(DIST, 'vendor', 'pdfjs', f), 'w', encoding='utf-8').write(src)
     fd = os.path.join(DIST, 'fonts'); os.makedirs(fd)
-    for slug, ws in (('amiri', (400, 700)), ('ibm-plex-sans-arabic', (400, 500, 600))):
+    for slug, ws in (('noto-naskh-arabic', (400, 500, 600, 700)),):
         for wt in ws:
             for sub in ('arabic', 'latin'):
                 f = f'{slug}-{sub}-{wt}-normal.woff2'
