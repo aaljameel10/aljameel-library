@@ -81,11 +81,21 @@ ICON = {
 }
 
 
+# Works whose stored image is only an article's first page or a journal title page keep the drawn cover.
+NO_PHOTO_COVER = {'1', '8', '9', '13', '18', '19'}
+
+
 def cover(w, lg=False, link=True):
+    cls = f'cover t-{w["theme"]}' + (' lg' if lg else '')
+    if w.get('cover') and w['id'] not in NO_PHOTO_COVER:
+        inner = f'<img src="{w["cover"]}" alt="غلاف: {e(w["title"])}"{"" if lg else " loading=\"lazy\""} decoding="async">'
+        cls += ' photo'
+        if link:
+            return f'<a class="{cls}" href="/books/{w["slug"]}/" aria-label="{e(w["title"])}" tabindex="-1">{inner}</a>'
+        return f'<div class="{cls}">{inner}</div>'
     inner = (f'<span class="c-top"><span>{e(TYPES[w["type"]])}</span><span>{ar(w["year"])}</span></span>'
              f'<span>{STAR.format(cls="c-star", c="#D9B26A")}<span class="c-title">{e(w["title"])}</span></span>'
              f'<span class="c-author">محمد بن فارس الجميل</span>')
-    cls = f'cover t-{w["theme"]}' + (' lg' if lg else '')
     if link:
         return f'<a class="{cls}" href="/books/{w["slug"]}/" aria-label="{e(w["title"])}" tabindex="-1">{inner}</a>'
     return f'<div class="{cls}" aria-hidden="true">{inner}</div>'
@@ -504,7 +514,8 @@ def build_book(w, W):
     counts = (f'<div data-count-wrap hidden><dt>مرات القراءة في الموقع</dt><dd data-count="{w["slug"]}:read"></dd></div>'
               f'<div data-count-wrap hidden><dt>مرات التحميل</dt><dd data-count="{w["slug"]}:download"></dd></div>')
     facth = ''.join(f'<div><dt>{e(a)}</dt><dd>{ltr(b)}</dd></div>' for a, b in facts)
-    orig = f'<img class="orig" src="{w["cover"]}" alt="الغلاف الأصلي: {e(w["title"])}" loading="lazy"><small>الغلاف الأصلي</small>' if w['cover'] else ''
+    orig = (f'<img class="orig" src="{w["cover"]}" alt="الغلاف الأصلي: {e(w["title"])}" loading="lazy"><small>الغلاف الأصلي</small>'
+            if w['cover'] and w['id'] in NO_PHOTO_COVER else '')
     sub = f'<p class="subtitle">{e(w["subtitle"])}</p>' if w['subtitle'] else ''
 
     body = f'''

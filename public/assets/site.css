@@ -346,3 +346,6 @@ bdi[dir=ltr]{white-space:nowrap;unicode-bidi:isolate}
 @keyframes qsIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.qs-slide{animation:none}}
 @media (max-width:640px){.qs-track{min-height:13em}}
+.cover.photo{padding:0;background:#fff}
+.cover.photo::before{display:none}
+.cover.photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center top}
