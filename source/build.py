@@ -248,10 +248,24 @@ def build_home(W):
           ('٢٠١٧م', 'جائزة الملك سلمان التقديرية للمتميزين في خدمة تاريخ الجزيرة العربية'),
           ('٢٠٢١م', 'صدور «موالي رسول الله ﷺ وأزواجه وخدمهم من النساء»')]
     tlh = ''.join(f'<li><span class="y">{y}</span><span>{e(t)}</span></li>' for y, t in tl)
-    q = by['22']['quotes'][-1] if by['22']['quotes'] else None
-    quote = (f'<section class="sec sand"><div class="wrap quote">{STAR.format(cls="star", c="#8A5F17")}'
-             f'<blockquote>«{e(q["t"])}»</blockquote><cite>من كتاب «نساء حول النبي ﷺ»، {e(q["p"])}. '
-             f'<a href="/books/{by["22"]["slug"]}/">اقرأ الكتاب</a></cite></div></section>') if q else ''
+    strip = []
+    for w in [by['22']] + [w for w in W if w['id'] != '22']:
+        if w['quotes']:
+            q = w['quotes'][-1] if w['id'] == '22' else w['quotes'][0]
+            strip.append((w, q))
+    slides = ''.join(
+        f'<figure class="qs-slide"{" hidden" if i else ""} data-i="{i}"><blockquote>«{e(q["t"])}»</blockquote>'
+        f'<figcaption>من {"كتاب" if w["type"] == "book" else "بحث"} «<a href="/books/{w["slug"]}/">{e(w["title"])}</a>»'
+        f'{("، " + e(q["p"])) if q.get("p") else ""}</figcaption></figure>'
+        for i, (w, q) in enumerate(strip))
+    quote = (f'<section class="sec sand" aria-roledescription="carousel" aria-label="مقتطفات من مؤلفات الدكتور">'
+             f'<div class="wrap quote qs" data-count="{len(strip)}">{STAR.format(cls="star", c="#8A5F17")}'
+             f'<div class="qs-track" aria-live="polite">{slides}</div>'
+             f'<div class="qs-nav"><button type="button" class="qs-prev" aria-label="المقتطف السابق">&#8594;</button>'
+             f'<span class="qs-count"><span class="qs-n">١</span> / {ar(len(strip))}</span>'
+             f'<button type="button" class="qs-pause" aria-label="إيقاف التمرير">&#10073;&#10073;</button>'
+             f'<button type="button" class="qs-next" aria-label="المقتطف التالي">&#8592;</button></div>'
+             f'</div></section>') if strip else ''
     feat_text = feat['summary'] or 'دراسة لبيوت النبي ﷺ وحجراتها ومواقعها وصفتها، تتخذ من بيت عائشة أنموذجاً، وتتناول أثاث البيوت ومتاعها ومعاش النبي ﷺ وأزواجه.'
     body = f'''
 <section class="hero"><div class="wrap">
@@ -316,7 +330,7 @@ def build_home(W):
           "about": {"@type": "Person", "name": "محمد بن فارس الجميل", "jobTitle": "أستاذ التاريخ والحضارة الإسلامية", "affiliation": "جامعة الملك سعود"}}
     return page('/', 'مكتبة الدكتور محمد بن فارس الجميل: كتب السيرة النبوية والتاريخ الإسلامي',
                 'كتب الدكتور محمد بن فارس الجميل وأبحاثه المحكّمة في السيرة النبوية وتاريخ المدينة المنورة والحضارة الإسلامية، للقراءة والتحميل والبحث في نصوصها.',
-                body, 'home', jsonld=ld, scripts='<script type="module" src="/assets/stats.js"></script>' + YT_JS)
+                body, 'home', jsonld=ld, scripts='<script type="module" src="/assets/stats.js"></script><script type="module" src="/assets/quotes.js"></script>' + YT_JS)
 
 
 def build_library(W):
@@ -825,7 +839,9 @@ def main():
         c = os.path.join(LIB, 'covers', f'{w["id"]}.webp')
         if os.path.exists(c):
             shutil.copy(c, os.path.join(DIST, 'covers', f'{w["slug"]}.webp'))
-        if os.environ.get('NO_PDFS') != '1':
+        # Always republish a PDF that exists (NO_PDFS only tolerates missing ones), so a quick
+        # build can never drop the published PDFs from public/.
+        if os.path.exists(w['_src']):
             shutil.copy(w['_src'], os.path.join(DIST, 'pdfs', f'{w["slug"]}.pdf'))
         s = os.path.join(LIB, 'site-data', 'search', f'{w["id"]}.json')
         if os.path.exists(s):
