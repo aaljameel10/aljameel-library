@@ -490,11 +490,8 @@ def build_book(w, W):
     styles = ''.join(f'<p class="cite-label">{e(lbl)}</p><div class="cite-box" id="cite-{n}">{html_}</div>'
                      f'<button class="btn ghost" type="button" data-copy="cite-{n}" data-label="نسخ التوثيق">نسخ التوثيق</button>'
                      for n, (lbl, html_) in enumerate(cite_styles(w)))
-    gap = ('<p class="note">لم تُذكر بيانات النشر لهذا العمل في الملف، فاقتصر التوثيق على المؤلف والعنوان والسنة.</p>'
-           if w['cite']['kind'] == 'unknown' else '')
     add('cite', 'التوثيق', f'<p class="cite-label">التوثيق العربي</p><div class="cite-box" id="cite-ar">{e(cite)}</div>'
-        f'<button class="btn ghost" type="button" data-copy="cite-ar" data-label="نسخ التوثيق">نسخ التوثيق</button>' + styles + gap +
-        f'<p class="note">رابط هذه الصفحة: <span dir="ltr">{SITE}/books/{w["slug"]}/</span></p>')
+        f'<button class="btn ghost" type="button" data-copy="cite-ar" data-label="نسخ التوثيق">نسخ التوثيق</button>' + styles)
 
     tabh = ''.join(f'<button class="tab" role="tab" id="tab-{k}" aria-controls="panel-{k}" aria-selected="{str(i == 0).lower()}" tabindex="{0 if i == 0 else -1}">{e(l)}</button>' for i, (k, l) in enumerate(tabs))
     panh = ''.join(f'<div class="panel" role="tabpanel" id="panel-{k}" aria-labelledby="tab-{k}"{"" if i == 0 else " hidden"}>{c}</div>' for i, (k, c) in enumerate(panels))
