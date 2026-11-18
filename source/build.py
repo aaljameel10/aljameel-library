@@ -18,6 +18,11 @@ THEMES = {
     'madi': 'الحياة اليومية في العهد النبوي',
     'hadara': 'التعليم والحضارة الإسلامية',
 }
+# Works that belong side by side although their themes differ; shown first in «من المحور نفسه».
+RELATED_PINNED = {
+    'women-around-prophet': ['prophet-wives', 'women-jewelry', 'mawali-rasul', 'mashahir-mawali'],
+    'women-jewelry': ['women-around-prophet'],
+}
 THEME_SHORT = {'sira': 'السيرة ومجتمع المدينة', 'yahud': 'النبي ﷺ واليهود', 'madi': 'الحياة اليومية', 'hadara': 'التعليم والحضارة'}
 TYPES = {'book': 'كتاب', 'research': 'بحث محكّم', 'article': 'مقال نقدي'}
 TYPES_PL = {'all': 'الكل', 'book': 'كتب', 'research': 'أبحاث محكّمة', 'article': 'مقالات'}
@@ -462,7 +467,9 @@ def text_excerpt(w, words=('مقدم',), label=''):
 
 
 def build_book(w, W):
-    related = [x for x in W if x['theme'] == w['theme'] and x['id'] != w['id']][:4]
+    by_slug = {x['slug']: x for x in W}
+    pinned = [by_slug[sl] for sl in RELATED_PINNED.get(w['slug'], []) if sl in by_slug]
+    related = (pinned + [x for x in W if x['theme'] == w['theme'] and x['id'] != w['id'] and x not in pinned])[:4]
     tabs, panels = [], []
 
     def add(key, label, content):
